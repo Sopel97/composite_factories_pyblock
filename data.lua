@@ -3,7 +3,7 @@ do
 
     local test_tech_name = cflib.add_technology{
         name = "test-tech",
-        prerequisites = {},
+        prerequisites = {cflib.base_technology},
         num_units = 123,
         unit_ingredients = {
             {"automation-science-pack", 1},

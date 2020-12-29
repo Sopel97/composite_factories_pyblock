@@ -68,6 +68,17 @@ do
         return full_name
     end
 
+    cflib.base_technology = cflib.add_technology{
+        name = "base-technology",
+        prerequisites = {"logistic-science-pack"},
+        num_units = 500,
+        unit_ingredients = {
+            {"automation-science-pack", 1},
+            {"logistic-science-pack", 1}
+        },
+        unit_time = 60
+    }
+
     local function add_recipe_unlock(recipe, technology)
         table.insert(data.raw.technology[technology].effects, {
             type = "unlock-recipe",
