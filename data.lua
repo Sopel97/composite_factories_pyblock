@@ -177,6 +177,7 @@ do
                 type = "electric",
                 usage_priority = "secondary-input",
                 emissions_per_minute = args.emissions_per_minute,
+                drain = "0W"
             },
             energy_usage = args.energy_usage,
             animation = {
