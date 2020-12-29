@@ -74,4 +74,30 @@ do
         size = 12,
         unlocked_by = test_tech_name
     }
+
+    -- End of placeholder stuff
+    cflib.add_composite_factory{
+        name = "tar-0",
+        ingredients = {},
+        results = {
+            {type = "fluid", name = "tar", amount = 250}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 200},
+            {"pipe-to-ground", 100},
+            {"pipe", 50},
+            {"small-electric-pole", 40},
+            {"fast-inserter", 40},
+            {"soil-extractormk01", 20},
+            {"washer", 10},
+            {"offshore-pump", 4},
+            {"py-sinkhole", 1},
+            {"distilator", 1}
+        },
+        size = 25,
+        energy_usage = "10MW",
+        emissions_per_minute = 1.68,
+        unlocked_by = cflib.base_technology
+    }
 end
