@@ -42,6 +42,35 @@ do
       }
     }
 
+    local function add_technology(args)
+        local full_name = name_prefix .. args.name
+
+        data:extend({{
+            type = "technology",
+            name = full_name,
+            -- placeholder
+            icon = "__base__/graphics/icons/assembling-machine-1.png",
+            icon_size = 64,
+            effects = {},
+            prerequisites = args.prerequisites,
+            order = "g-e-d",
+            unit = {
+                count = args.num_units,
+                ingredients = args.unit_ingredients,
+                time = args.unit_time
+            }
+        }})
+
+        return full_name
+    end
+
+    local function add_recipe_unlock(recipe, technology)
+        table.insert(data.raw.technology[technology].effects, {
+            type = "unlock-recipe",
+            recipe = recipe
+        })
+    end
+
     local function count_fluids(things)
         local num_fluids = 0
         for _, e in pairs(things) do
@@ -64,6 +93,8 @@ do
 
         local num_fluid_inputs = count_fluids(args.ingredients)
         local num_fluid_outputs = count_fluids(args.results)
+
+        local composite_factory_recipe_enabled = args.unlocked_by == nil
 
         local fluid_boxes = {
             off_when_no_fluid_recipe = true
@@ -99,7 +130,7 @@ do
         data:extend({{
             type = "recipe",
             name = composite_factory_recipe_name,
-            enabled = true,
+            enabled = composite_factory_recipe_enabled,
             energy_required = 600.0,
             category = "crafting",
             ingredients = args.constituent_buildings,
@@ -243,6 +274,10 @@ do
                 fade_out_ticks = 20
             }
         }})
+
+        if args.unlocked_by then
+            add_recipe_unlock(composite_factory_recipe_name, args.unlocked_by)
+        end
     end
 
     local function add_composite_generator(args)
@@ -258,11 +293,13 @@ do
         local base_hr_sprite_size = 6
         local half_size = args.size / 2
 
+        local enabled = args.unlocked_by == nil
+
         -- Composite factory building item recipe
         data:extend({{
             type = "recipe",
             name = composite_factory_recipe_name,
-            enabled = true,
+            enabled = composite_factory_recipe_enabled,
             energy_required = 600.0,
             category = "crafting",
             ingredients = args.constituent_buildings,
@@ -347,7 +384,27 @@ do
             },
             vehicle_impact_sound = {filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65}
         }})
+
+        if args.unlocked_by then
+            add_recipe_unlock(composite_factory_recipe_name, args.unlocked_by)
+        end
     end
+
+    local test_tech_name = add_technology{
+        name = "test-tech",
+        prerequisites = {},
+        num_units = 123,
+        unit_ingredients = {
+            {"automation-science-pack", 1},
+            {"logistic-science-pack", 2},
+            {"military-science-pack", 2},
+            {"chemical-science-pack", 4},
+            {"production-science-pack", 5},
+            {"utility-science-pack", 6},
+            {"space-science-pack", 7}
+        },
+        unit_time = 60
+    }
 
     add_composite_factory{
         name = "iron-gear-wheel",
@@ -365,7 +422,8 @@ do
         },
         size = 12,
         energy_usage = "10MW",
-        emissions_per_minute = 1
+        emissions_per_minute = 1,
+        unlocked_by = test_tech_name
     }
 
     add_composite_factory{
@@ -387,7 +445,8 @@ do
         },
         size = 12,
         energy_usage = "10MW",
-        emissions_per_minute = 1
+        emissions_per_minute = 1,
+        unlocked_by = test_tech_name
     }
 
     add_composite_generator{
@@ -401,6 +460,7 @@ do
             {"solar-panel", 50},
             {"inserter", 20}
         },
-        size = 12
+        size = 12,
+        unlocked_by = test_tech_name
     }
 end
