@@ -1,5 +1,5 @@
 do
-    local cflib = require("lib/cflib")
+    local cflib = require("lib/data")
 
     local test_tech_name = cflib.add_technology{
         name = "test-tech",
