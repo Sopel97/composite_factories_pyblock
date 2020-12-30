@@ -8,6 +8,23 @@ do
     local item_recipe_group_name = name_prefix .. "processing"
     local item_recipe_category = name_prefix .. "processing"
 
+    local function add_recipe_unlock(recipe, technology)
+        table.insert(data.raw.technology[technology].effects, {
+            type = "unlock-recipe",
+            recipe = recipe
+        })
+    end
+
+    local function count_fluids(things)
+        local num_fluids = 0
+        for _, e in pairs(things) do
+            if e.type and e.type == "fluid" then
+                num_fluids = num_fluids + 1
+            end
+        end
+        return num_fluids
+    end
+
     data:extend {
       {
           type = "item-group",
@@ -46,6 +63,113 @@ do
       }
     }
 
+    -- The container used for material exchange.
+    local function add_container(args)
+        local full_name = name_prefix .. args.name
+
+        local base_sprite_size = 1
+        local base_hr_sprite_size = 2
+        local half_size = args.size / 2
+
+        local container_recipe_enabled = args.unlocked_by == nil
+
+        -- Container item
+        data:extend({{
+            type = "item",
+            name = full_name,
+            icon = "__base__/graphics/icons/wooden-chest.png",
+            icon_size = 64, icon_mipmaps = 4,
+            subgroup = "storage",
+            order = "a[items]-a[wooden-chest]",
+            place_result = full_name,
+            stack_size = 1
+        }})
+
+        -- Container recipe
+        data:extend({{
+            type = "recipe",
+            name = full_name,
+            enabled = container_recipe_enabled,
+            energy_required = args.energy_required,
+            category = "crafting",
+            ingredients = args.ingredients,
+            results = {
+                {full_name, 1}
+            }
+        }})
+
+        if args.unlocked_by then
+            add_recipe_unlock(full_name, args.unlocked_by)
+        end
+
+        -- Container entity
+        data:extend({{
+            type = "container",
+            name = full_name,
+            icon = "__base__/graphics/icons/wooden-chest.png",
+            icon_size = 64, icon_mipmaps = 4,
+            flags = {"placeable-neutral", "placeable-player", "player-creation"},
+            minable = {mining_time = 2, result = full_name},
+            max_health = 10000,
+            corpse = "big-remnants",
+            dying_explosion = "medium-explosion",
+            open_sound = { filename = "__base__/sound/machine-open.ogg", volume = 0.85 },
+            close_sound = { filename = "__base__/sound/machine-close.ogg", volume = 0.75 },
+            vehicle_impact_sound = { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
+            resistances =
+            {
+                {
+                    type = "fire",
+                    percent = 90
+                }
+            },
+            collision_box = {{-half_size+0.1, -half_size+0.1}, {half_size-0.1, half_size-0.1}},
+            selection_box = {{-half_size, -half_size}, {half_size, half_size}},
+            inventory_size = args.num_slots,
+            scale_info_icons = true,
+            picture = {
+                layers = {
+                    {
+                        filename = "__base__/graphics/entity/wooden-chest/wooden-chest.png",
+                        priority = "high",
+                        width = 32,
+                        height = 36,
+                        shift = util.by_pixel(0.5, -2),
+                        scale = args.size / base_sprite_size,
+                        hr_version = {
+                            filename = "__base__/graphics/entity/wooden-chest/hr-wooden-chest.png",
+                            priority = "high",
+                            width = 62,
+                            height = 72,
+                            shift = util.by_pixel(0.5, -2),
+                            scale = args.size / base_hr_sprite_size
+                        }
+                    },
+                    {
+                        filename = "__base__/graphics/entity/wooden-chest/wooden-chest-shadow.png",
+                        priority = "high",
+                        width = 52,
+                        height = 20,
+                        shift = util.by_pixel(10, 6.5),
+                        draw_as_shadow = true,
+                        scale = args.size / base_sprite_size,
+                        hr_version = {
+                            filename = "__base__/graphics/entity/wooden-chest/hr-wooden-chest-shadow.png",
+                            priority = "high",
+                            width = 104,
+                            height = 40,
+                            shift = util.by_pixel(10, 6.5),
+                            draw_as_shadow = true,
+                            scale = args.size / base_hr_sprite_size
+                        }
+                    }
+                }
+            }
+        }})
+
+        return full_name
+    end
+
     cflib.add_technology = function(args)
         local full_name = name_prefix .. args.name
 
@@ -79,22 +203,19 @@ do
         unit_time = 60
     }
 
-    local function add_recipe_unlock(recipe, technology)
-        table.insert(data.raw.technology[technology].effects, {
-            type = "unlock-recipe",
-            recipe = recipe
-        })
-    end
-
-    local function count_fluids(things)
-        local num_fluids = 0
-        for _, e in pairs(things) do
-            if e.type and e.type == "fluid" then
-                num_fluids = num_fluids + 1
-            end
-        end
-        return num_fluids
-    end
+    cflib.material_exchange_container = add_container{
+        name = "material-exchange-container",
+        num_slots = 1000,
+        size = 10,
+        ingredients = {
+            {"wooden-chest", 100},
+            {"iron-plate", 200},
+            {"stone-brick", 200},
+            {"steel-plate", 200}
+        },
+        energy_required = 600.0,
+        unlocked_by = cflib.base_technology
+    }
 
     cflib.add_composite_factory = function(args)
         local full_name = name_prefix .. args.name
