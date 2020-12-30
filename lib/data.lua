@@ -1,12 +1,9 @@
 do
     -- Maybe make it as a separete library mod later on?
 
-    local cflib = {}
+    local core = require("private/core")
 
-    local name_prefix = "composite-factory-"
-    local composite_factory_item_group_name = name_prefix .. "buildings"
-    local item_recipe_group_name = name_prefix .. "processing"
-    local item_recipe_category = name_prefix .. "processing"
+    local cflib = {}
 
     local function add_recipe_unlock(recipe, technology)
         table.insert(data.raw.technology[technology].effects, {
@@ -28,30 +25,30 @@ do
     data:extend {
       {
           type = "item-group",
-          name = composite_factory_item_group_name,
+          name = core.item_group_name,
           order = "z",
           inventory_order = "z",
-          icon = "__composite_factories_pyblock__/graphics/item-group-buildings.png",
+          icon = "__composite_factories_pyblock__/graphics/item-group.png",
           icon_size = 64
       },
       {
           type = "item-subgroup",
-          name = composite_factory_item_group_name,
-          group = composite_factory_item_group_name,
+          name = core.item_group_name,
+          group = core.item_group_name,
           order = "a"
       },
       {
           type = "item-group",
-          name = item_recipe_group_name,
+          name = core.processing_recipe_group_name,
           order = "z",
           inventory_order = "z",
-          icon = "__composite_factories_pyblock__/graphics/item-group-buildings.png",
+          icon = "__composite_factories_pyblock__/graphics/processing-recipe-group.png",
           icon_size = 64
       },
       {
           type = "item-subgroup",
-          name = item_recipe_group_name,
-          group = item_recipe_group_name,
+          name = core.processing_recipe_group_name,
+          group = core.processing_recipe_group_name,
           order = "a"
       }
     }
@@ -59,13 +56,13 @@ do
     data:extend {
       {
           type = "recipe-category",
-          name = item_recipe_category
+          name = core.processing_recipe_category_name
       }
     }
 
     -- The container used for material exchange.
     local function add_container(args)
-        local full_name = name_prefix .. args.name
+        local full_name = core.make_container_name(args.name)
 
         local base_sprite_size = 1
         local base_hr_sprite_size = 2
@@ -78,8 +75,9 @@ do
             type = "item",
             name = full_name,
             icon = "__base__/graphics/icons/wooden-chest.png",
-            icon_size = 64, icon_mipmaps = 4,
-            subgroup = "storage",
+            icon_size = 64,
+            icon_mipmaps = 4,
+            subgroup = core.item_group_name,
             order = "a[items]-a[wooden-chest]",
             place_result = full_name,
             stack_size = 1
@@ -171,7 +169,7 @@ do
     end
 
     cflib.add_technology = function(args)
-        local full_name = name_prefix .. args.name
+        local full_name = core.make_technology_name(args.name)
 
         data:extend({{
             type = "technology",
@@ -218,11 +216,9 @@ do
     }
 
     cflib.add_composite_factory = function(args)
-        local full_name = name_prefix .. args.name
-        local composite_factory_entity_name = full_name .. "-factory"
-        local composite_factory_recipe_name = full_name .. "-factory"
-        local composite_factory_item_name = full_name .. "-factory"
-        local item_recipe_name = full_name
+        local factory_full_name = core.make_composite_factory_name(args.name)
+        local processing_full_name = core.make_processing_recipe_name(args.name)
+
         local base_sprite_size = 3
         local base_hr_sprite_size = 6
         local half_size = args.size / 2
@@ -265,25 +261,29 @@ do
         -- Composite factory building item recipe
         data:extend({{
             type = "recipe",
-            name = composite_factory_recipe_name,
+            name = factory_full_name,
             enabled = composite_factory_recipe_enabled,
             energy_required = 600.0,
             category = "crafting",
             ingredients = args.constituent_buildings,
             results = {
-                {composite_factory_entity_name, 1}
+                {factory_full_name, 1}
             }
         }})
+
+        if args.unlocked_by then
+            add_recipe_unlock(factory_full_name, args.unlocked_by)
+        end
 
         -- Composite factory product recipe
         if #args.results == 1 then
             data:extend({{
                 type = "recipe",
-                name = item_recipe_name,
+                name = processing_full_name,
                 energy_required = args.energy_required,
                 enabled = true,
-                category = item_recipe_category,
-                subgroup = item_recipe_group_name,
+                category = core.processing_recipe_category_name,
+                subgroup = core.processing_recipe_group_name,
                 order = "b",
                 ingredients = args.ingredients,
                 results = args.results
@@ -291,13 +291,13 @@ do
         else
             data:extend({{
                 type = "recipe",
-                name = item_recipe_name,
+                name = processing_full_name,
                 energy_required = args.energy_required,
                 enabled = true,
-                category = item_recipe_category,
-                -- TODO: generate an icon
+                category = core.processing_recipe_category_name,
+                subgroup = core.processing_recipe_group_name,
+                -- TODO: generate an icon from products
                 icon = "__base__/graphics/icons/assembling-machine-1.png",
-                subgroup = item_recipe_group_name,
                 order = "b",
                 icon_size = 64,
                 ingredients = args.ingredients,
@@ -308,32 +308,32 @@ do
         -- Composite factory item
         data:extend({{
             type = "item",
-            name = composite_factory_item_name,
+            name = factory_full_name,
             icon = "__base__/graphics/icons/assembling-machine-1.png",
             icon_size = 64,
             flags = {},
-            subgroup = composite_factory_item_group_name,
+            subgroup = core.item_group_name,
             order = "b",
-            place_result = composite_factory_entity_name,
+            place_result = factory_full_name,
             stack_size = 1
         }})
 
         -- Composite factory entity
         data:extend({{
             type = "assembling-machine",
-            name = composite_factory_entity_name,
-            fixed_recipe = item_recipe_name,
+            name = factory_full_name,
+            fixed_recipe = processing_full_name,
             icon = "__base__/graphics/icons/assembling-machine-1.png",
             icon_size = 64,
             flags = {"placeable-neutral", "player-creation"},
-            minable = {mining_time = 1, result = composite_factory_item_name},
+            minable = {mining_time = 1, result = factory_full_name},
             max_health = 10000,
             corpse = "medium-remnants",
             dying_explosion = "medium-explosion",
             collision_box = {{-half_size+0.1, -half_size+0.1}, {half_size-0.1, half_size-0.1}},
             selection_box = {{-half_size, -half_size}, {half_size, half_size}},
             match_animation_speed_to_activity = false,
-            crafting_categories = {item_recipe_category},
+            crafting_categories = {core.processing_recipe_category_name},
             scale_entity_info_icon = true,
             module_specification = {
                 module_slots = 1
@@ -410,10 +410,6 @@ do
                 fade_out_ticks = 20
             }
         }})
-
-        if args.unlocked_by then
-            add_recipe_unlock(composite_factory_recipe_name, args.unlocked_by)
-        end
     end
 
     cflib.add_composite_generator = function(args)
@@ -421,10 +417,8 @@ do
             error("Only generators without ingredients are supported right now.")
         end
 
-        local full_name = name_prefix .. args.name
-        local composite_factory_entity_name = full_name .. "-generator"
-        local composite_factory_recipe_name = full_name .. "-generator"
-        local composite_factory_item_name = full_name .. "-generator"
+        local full_name = core.make_generator_name(args.name)
+
         local base_sprite_size = 3
         local base_hr_sprite_size = 6
         local half_size = args.size / 2
@@ -434,36 +428,40 @@ do
         -- Composite factory building item recipe
         data:extend({{
             type = "recipe",
-            name = composite_factory_recipe_name,
+            name = full_name,
             enabled = composite_factory_recipe_enabled,
             energy_required = 600.0,
             category = "crafting",
             ingredients = args.constituent_buildings,
             results = {
-                {composite_factory_entity_name, 1}
+                {full_name, 1}
             }
         }})
+
+        if args.unlocked_by then
+            add_recipe_unlock(full_name, args.unlocked_by)
+        end
 
         -- Composite factory item
         data:extend({{
             type = "item",
-            name = composite_factory_item_name,
+            name = full_name,
             icon = "__base__/graphics/icons/solar-panel.png",
             icon_size = 64,
             flags = {},
-            subgroup = composite_factory_item_group_name,
+            subgroup = core.item_group_name,
             order = "b",
-            place_result = composite_factory_entity_name,
+            place_result = full_name,
             stack_size = 1
         }})
 
         data:extend({{
             type = "electric-energy-interface",
-            name = composite_factory_entity_name,
+            name = full_name,
             icons = { {icon = "__base__/graphics/icons/solar-panel.png", tint = {r=1, g=0.6, b=0.8, a=1}} },
             icon_size = 64, icon_mipmaps = 4,
             flags = {"placeable-neutral", "player-creation"},
-            minable = {mining_time = 1, result = composite_factory_item_name},
+            minable = {mining_time = 1, result = full_name},
             max_health = 10000,
             corpse = "medium-remnants",
             subgroup = "other",
@@ -473,7 +471,7 @@ do
             energy_source =
             {
                 type = "electric",
-                buffer_capacity = buffer_size,
+                buffer_capacity = nil,
                 usage_priority = "tertiary"
             },
             energy_production = args.energy_production,
@@ -520,10 +518,6 @@ do
             },
             vehicle_impact_sound = {filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65}
         }})
-
-        if args.unlocked_by then
-            add_recipe_unlock(composite_factory_recipe_name, args.unlocked_by)
-        end
     end
 
     return cflib
