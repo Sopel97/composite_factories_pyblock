@@ -122,13 +122,25 @@ do
                 direction = "vertical"
             }
 
+            if entity.type == "electric-energy-interface" then
+                local energy_produced_mw = entity.max_energy_production * 60.0 / 1000000.0
+
+                product_summary_flow.add{
+                    type = "label",
+                    caption = energy_produced_mw .. "MW"
+                }
+            elseif entity.type == "assembling-machine" then
+            end
+
             local ingredient_summary_flow = exchange_table.add{
                 type = "flow",
                 direction = "vertical"
             }
         end
 
-        add_exchange_item(global.cflib.prototypes[1])
+        for _, p in pairs(global.cflib.prototypes) do
+            add_exchange_item(p)
+        end
 
         return gui
     end
