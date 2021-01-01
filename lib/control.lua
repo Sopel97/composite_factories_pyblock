@@ -114,32 +114,47 @@ do
                     enabled = false,
                     sprite = type .. "/" .. name,
                     number = amount,
-                    tooltip = {"", ingredient.amount, "x ", item.localised_name}
+                    tooltip = {"", amount, "x ", item.localised_name}
                 }
             end
 
-            local product_summary_flow = exchange_table.add{
-                type = "flow",
+            local product_summary_panel = exchange_table.add{
+                type = "table",
+                column_count = 4,
                 direction = "vertical"
             }
 
             if entity.type == "electric-energy-interface" then
                 local energy_produced_mw = entity.max_energy_production * 60.0 / 1000000.0
 
-                product_summary_flow.add{
+                product_summary_panel.add{
                     type = "label",
                     caption = energy_produced_mw .. "MW"
                 }
-            elseif entity.type == "assembling-machine" then
+            elseif entity.type == "assembling-machine" and processing_recipe then
+                for _, product in pairs(processing_recipe.products) do
+                    local name = product.name
+                    local type = product.type
+                    local amount = product.amount
+                    local item = (type == "item" and game.item_prototypes[name]) or (type == "fluid" and game.fluid_prototypes[name])
+
+                    product_summary_panel.add{
+                        type = "sprite-button",
+                        enabled = false,
+                        sprite = type .. "/" .. name,
+                        number = amount,
+                        tooltip = {"", amount, "x ", item.localised_name}
+                    }
+                end
             end
 
-            local energy_required_flow = exchange_table.add{
+            local energy_required_panel = exchange_table.add{
                 type = "flow",
                 direction = "vertical"
             }
 
             if processing_recipe then
-                energy_required_flow.add{
+                energy_required_panel.add{
                     type = "sprite-button",
                     enabled = false,
                     -- TODO: some clock sprite thingy
@@ -148,10 +163,27 @@ do
                 }
             end
 
-            local ingredient_summary_flow = exchange_table.add{
+            local ingredient_summary_panel = exchange_table.add{
                 type = "flow",
                 direction = "vertical"
             }
+
+            if processing_recipe then
+                for _, ingredient in pairs(processing_recipe.ingredients) do
+                    local name = ingredient.name
+                    local type = ingredient.type
+                    local amount = ingredient.amount
+                    local item = (type == "item" and game.item_prototypes[name]) or (type == "fluid" and game.fluid_prototypes[name])
+
+                    ingredient_summary_panel.add{
+                        type = "sprite-button",
+                        enabled = false,
+                        sprite = type .. "/" .. name,
+                        number = amount,
+                        tooltip = {"", amount, "x ", item.localised_name}
+                    }
+                end
+            end
         end
 
         for _, p in pairs(global.cflib.prototypes) do
