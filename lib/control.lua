@@ -23,7 +23,7 @@ do
                         entity_item_recipe = entity_item_recipe
                     })
                 end
-            else if e.type == "electric-energy-interface" then
+            elseif e.type == "electric-energy-interface" then
                 if core.is_mod_prefixed_name(name) then
                     entity = e
                     entity_item = game.item_prototypes[name]
@@ -78,10 +78,9 @@ do
 
         local add_exchange_item = function(prototypes)
             local entity = prototypes.entity
-            local recipe = prototypes.recipe
-            local item = prototypes.item
-            local item_recipe = prototypes.item_recipe
             local name = entity.name
+            local entity_item = prototypes.entity_item
+            local entity_item_recipe = prototypes.entity_item_recipe
 
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
             local building_ingredients_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-panel-" .. name)
@@ -105,13 +104,14 @@ do
                 name = building_ingredients_panel_name
             }
 
-            for
-            building_ingredients_panel.add{
-                type = "sprite-button",
-                enabled = false,
-                sprite = "item/" .. item.name,
-                number = 12345
-            }
+            for _, ingredient in pairs(entity_item_recipe.ingredients) do
+                building_ingredients_panel.add{
+                    type = "sprite-button",
+                    enabled = false,
+                    sprite = ingredient.type .. "/" .. ingredient.name,
+                    number = ingredient.amount
+                }
+            end
 
             local product_summary_flow = exchange_table.add{
                 type = "flow",
@@ -172,7 +172,7 @@ do
         player.print(event.entity.name)
         player.print(gui.name)
         for _, p in pairs(global.cflib.prototypes) do
-            player.print(p.item.name)
+            player.print(p.entity_item.name)
         end
     end)
 end
