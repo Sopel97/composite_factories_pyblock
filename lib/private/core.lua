@@ -26,5 +26,10 @@ do
         return core.name_prefix .. name .. "-generator"
     end
 
+    core.is_mod_prefixed_name = function(name)
+        local found = string.find(name, core.name_prefix, 1, true)
+        return found and found == 1
+    end
+
     return core
 end
