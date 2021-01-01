@@ -40,6 +40,39 @@ do
         return factories
     end
 
+    local function add_gui_event_handler(event_type, player, gui_element_name, func)
+        local player_index = player.index
+
+        if not global.cflib.event_handlers[player_index] then
+            global.cflib.event_handlers[player_index] = {}
+        end
+
+        if not global.cflib.event_handlers[player_index][event_type] then
+            global.cflib.event_handlers[player_index][event_type] = {}
+        end
+
+        global.cflib.event_handlers[player_index][event_type][gui_element_name] = func
+    end
+
+    local function get_gui_event_handler(event_type, event)
+        local player_index = event.player_index
+        local gui_element_name = event.element.name
+
+        if not gui_element_name then
+            return nil
+        end
+
+        if not global.cflib.event_handlers[player_index] then
+            return nil
+        end
+
+        if not global.cflib.event_handlers[player_index][event_type] then
+            return nil
+        end
+
+        return global.cflib.event_handlers[player_index][event_type][gui_element_name]
+    end
+
     local function setup_material_exchange_container_gui(player)
         local gui_name = core.make_gui_element_name("material-exchange-container-gui")
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
@@ -94,7 +127,7 @@ do
                 caption = "Craft 1"
             }
 
-            exchange_table.add{
+            local toggle_visibility_button = exchange_table.add{
                 type = "button",
                 name = toggle_visibility_button_name,
                 caption = "S"
@@ -117,6 +150,19 @@ do
                 name = building_ingredients_panel_name,
                 visible = false
             }
+
+            add_gui_event_handler(defines.events.on_gui_click, player, toggle_visibility_button_name, function(event)
+                player.print("asd")
+
+                if toggle_visibility_button.caption == "S" then
+                    toggle_visibility_button.caption = "H"
+                else
+                    toggle_visibility_button.caption = "S"
+                end
+
+                building_ingredients_preview_panel.visible = not building_ingredients_preview_panel.visible
+                building_ingredients_panel.visible = not building_ingredients_panel.visible
+            end)
 
             do
                 local i = 0
@@ -235,13 +281,22 @@ do
     end
 
     script.on_init(function()
-        global.cflib = {}
+        global.cflib = {
+            event_handlers = {}
+        }
 
         setup_cache()
     end)
 
     script.on_configuration_changed(function(event)
         setup_cache()
+    end)
+
+    script.on_event(defines.events.on_gui_click, function(event)
+        local handler = get_gui_event_handler(defines.events.on_gui_click, event)
+        if handler then
+            handler(event)
+        end
     end)
 
     script.on_event(defines.events.on_gui_opened, function(event)
