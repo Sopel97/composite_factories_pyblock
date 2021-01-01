@@ -40,37 +40,49 @@ do
         return factories
     end
 
+    local function multi_index_set(table, indices, value)
+        local t = table
+        local num_indices = #indices
+
+        for i=1,num_indices do
+            local j = indices[i]
+            if i == num_indices then
+                t[j] = value
+            else
+                if not t[j] then
+                    t[j] = {}
+                end
+                t = t[j]
+            end
+        end
+    end
+
+    local function multi_index_get(table, indices)
+        local t = table
+        local num_indices = #indices
+
+        for i=1,num_indices do
+            local j = indices[i]
+            if not t[j] then
+                return nil
+            end
+            t = t[j]
+        end
+
+        return t
+    end
+
     local function add_gui_event_handler(event_type, player, gui_element_name, func)
         local player_index = player.index
 
-        if not global.cflib.event_handlers[player_index] then
-            global.cflib.event_handlers[player_index] = {}
-        end
-
-        if not global.cflib.event_handlers[player_index][event_type] then
-            global.cflib.event_handlers[player_index][event_type] = {}
-        end
-
-        global.cflib.event_handlers[player_index][event_type][gui_element_name] = func
+        multi_index_set(global.cflib.event_handlers, {player_index, event_type, gui_element_name}, func)
     end
 
     local function get_gui_event_handler(event_type, event)
         local player_index = event.player_index
         local gui_element_name = event.element.name
 
-        if not gui_element_name then
-            return nil
-        end
-
-        if not global.cflib.event_handlers[player_index] then
-            return nil
-        end
-
-        if not global.cflib.event_handlers[player_index][event_type] then
-            return nil
-        end
-
-        return global.cflib.event_handlers[player_index][event_type][gui_element_name]
+        return multi_index_get(global.cflib.event_handlers, {player_index, event_type, gui_element_name})
     end
 
     local function setup_material_exchange_container_gui(player)
