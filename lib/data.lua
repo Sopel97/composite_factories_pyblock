@@ -5,6 +5,8 @@ do
 
     local cflib = {}
 
+    cflib.gui_styles = require("private/gui_styles")
+
     local function add_recipe_unlock(recipe, technology)
         table.insert(data.raw.technology[technology].effects, {
             type = "unlock-recipe",
