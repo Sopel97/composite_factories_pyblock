@@ -5,12 +5,36 @@ do
         local factories = {}
 
         for name, e in pairs(game.entity_prototypes) do
-            if e.type == "assembling-machine" or e.type == "electric-energy-interface" then
+            if e.type == "assembling-machine" then
+                if core.is_mod_prefixed_name(name) then
+                    raw_name = core.unmake_composite_factory_name(name)
+                    processing_recipe = core.make_processing_recipe_name(raw_name)
+
+                    entity = e
+                    processing_recipe = game.recipe_prototypes[processing_recipe]
+                    entity_item = game.item_prototypes[name]
+                    entity_item_recipe = game.recipe_prototypes[name]
+
+                    table.insert(factories, {
+                        type = e.type,
+                        entity = entity,
+                        processing_recipe = processing_recipe,
+                        entity_item = entity_item,
+                        entity_item_recipe = entity_item_recipe
+                    })
+                end
+            else if e.type == "electric-energy-interface" then
                 if core.is_mod_prefixed_name(name) then
                     entity = e
-                    recipe = game.recipe_prototypes[name]
-                    item = game.item_prototypes[name]
-                    table.insert(factories, {entity = entity, recipe = recipe, item = item})
+                    entity_item = game.item_prototypes[name]
+                    entity_item_recipe = game.recipe_prototypes[name]
+
+                    table.insert(factories, {
+                        type = e.type,
+                        entity = entity,
+                        entity_item = entity_item,
+                        entity_item_recipe = entity_item_recipe
+                    })
                 end
             end
         end
@@ -56,6 +80,7 @@ do
             local entity = prototypes.entity
             local recipe = prototypes.recipe
             local item = prototypes.item
+            local item_recipe = prototypes.item_recipe
             local name = entity.name
 
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
@@ -74,12 +99,14 @@ do
                 caption = "S"
             }
 
-            local building_ingredients_flow = exchange_table.add{
+            local building_ingredients_panel = exchange_table.add{
                 type = "table",
                 column_count = 10,
                 name = building_ingredients_panel_name
             }
-            building_ingredients_flow.add{
+
+            for
+            building_ingredients_panel.add{
                 type = "sprite-button",
                 enabled = false,
                 sprite = "item/" .. item.name,
