@@ -83,7 +83,10 @@ do
 
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
             local building_ingredients_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-panel-" .. name)
+            local building_ingredients_preview_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel-" .. name)
             local toggle_visibility_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-toggle-visibility-button-" .. name)
+
+            local num_building_ingredients_columns = 5;
 
             exchange_table.add{
                 type = "button",
@@ -97,25 +100,53 @@ do
                 caption = "S"
             }
 
-            local building_ingredients_panel = exchange_table.add{
-                type = "table",
-                column_count = 10,
-                name = building_ingredients_panel_name
+            local building_ingredients_panel_flow = exchange_table.add{
+                type = "flow",
+                direction = "vertical"
             }
 
-            for _, ingredient in pairs(entity_item_recipe.ingredients) do
-                local name = ingredient.name
-                local type = ingredient.type
-                local amount = ingredient.amount
-                local item = (type == "item" and game.item_prototypes[name]) or (type == "fluid" and game.fluid_prototypes[name])
+            local building_ingredients_preview_panel = building_ingredients_panel_flow.add{
+                type = "table",
+                column_count = num_building_ingredients_columns,
+                name = building_ingredients_preview_panel_name
+            }
 
-                building_ingredients_panel.add{
-                    type = "sprite-button",
-                    enabled = false,
-                    sprite = type .. "/" .. name,
-                    number = amount,
-                    tooltip = {"", amount, "x ", item.localised_name}
-                }
+            local building_ingredients_panel = building_ingredients_panel_flow.add{
+                type = "table",
+                column_count = num_building_ingredients_columns,
+                name = building_ingredients_panel_name,
+                visible = false
+            }
+
+            do
+                local i = 0
+                for _, ingredient in pairs(entity_item_recipe.ingredients) do
+                    local name = ingredient.name
+                    local type = ingredient.type
+                    local amount = ingredient.amount
+                    local item = (type == "item" and game.item_prototypes[name]) or (type == "fluid" and game.fluid_prototypes[name])
+
+                    local args = {
+                        type = "sprite-button",
+                        enabled = false,
+                        sprite = type .. "/" .. name,
+                        number = amount,
+                        tooltip = {"", amount, "x ", item.localised_name}
+                    }
+
+                    building_ingredients_panel.add(args)
+
+                    if i < num_building_ingredients_columns - 1 then
+                        building_ingredients_preview_panel.add(args)
+                    elseif i == num_building_ingredients_columns - 1 then
+                        building_ingredients_preview_panel.add{
+                            type = "label",
+                            caption = "   ...   "
+                        }
+                    end
+
+                    i = i + 1
+                end
             end
 
             local product_summary_panel = exchange_table.add{
