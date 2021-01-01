@@ -132,6 +132,8 @@ do
             local toggle_visibility_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-toggle-visibility-button-" .. name)
 
             local num_building_ingredients_columns = 5;
+            local num_processing_recipe_ingredients_columns = 3;
+            local num_processing_recipe_products_columns = 3;
 
             exchange_table.add{
                 type = "button",
@@ -209,7 +211,7 @@ do
 
             local product_summary_panel = exchange_table.add{
                 type = "table",
-                column_count = 4,
+                column_count = num_processing_recipe_products_columns,
                 direction = "vertical"
             }
 
@@ -252,7 +254,8 @@ do
             end
 
             local ingredient_summary_panel = exchange_table.add{
-                type = "flow",
+                type = "table",
+                column_count = num_processing_recipe_ingredients_columns,
                 direction = "vertical"
             }
 
