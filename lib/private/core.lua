@@ -19,7 +19,7 @@ do
     end
 
     core.unmake_composite_factory_name = function(name)
-        return string.sub(name, string.len(core.name_prefix), -string.len("-factory") - 1)
+        return string.sub(name, string.len(core.name_prefix) + 1, -string.len("-factory") - 1)
     end
 
     core.make_processing_recipe_name = function(name)
@@ -31,7 +31,7 @@ do
     end
 
     core.unmake_generator_name = function(name)
-        return string.sub(name, string.len(core.name_prefix), -string.len("-generator") - 1)
+        return string.sub(name, string.len(core.name_prefix) + 1, -string.len("-generator") - 1)
     end
 
     core.make_gui_element_name = function(name)
@@ -39,7 +39,7 @@ do
     end
 
     core.get_unprefixed_name = function(name)
-        return string.sub(name, string.len(core.name_prefix), -1)
+        return string.sub(name, string.len(core.name_prefix) + 1, -1)
     end
 
     core.is_mod_prefixed_name = function(name)

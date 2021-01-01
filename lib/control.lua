@@ -8,10 +8,10 @@ do
             if e.type == "assembling-machine" then
                 if core.is_mod_prefixed_name(name) then
                     raw_name = core.unmake_composite_factory_name(name)
-                    processing_recipe = core.make_processing_recipe_name(raw_name)
+                    processing_recipe_name = core.make_processing_recipe_name(raw_name)
 
                     entity = e
-                    processing_recipe = game.recipe_prototypes[processing_recipe]
+                    processing_recipe = game.recipe_prototypes[processing_recipe_name]
                     entity_item = game.item_prototypes[name]
                     entity_item_recipe = game.recipe_prototypes[name]
 
@@ -66,8 +66,8 @@ do
         local exchange_table = main_gui_pane.add{
             type = "table",
             name = exchange_table_name,
-            -- Craft | Show/hide button | Icon/hidden building ingredients | Product summary | Ingredient summary
-            column_count = 5,
+            -- Craft | Show/hide button | Icon/hidden building ingredients | Product summary | Energy required | Ingredient summary
+            column_count = 6,
             draw_vertical_lines = true,
             draw_horizontal_lines = true,
             draw_horizontal_line_after_header = true,
@@ -79,6 +79,7 @@ do
             local name = entity.name
             local entity_item = prototypes.entity_item
             local entity_item_recipe = prototypes.entity_item_recipe
+            local processing_recipe = prototypes.processing_recipe
 
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
             local building_ingredients_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-panel-" .. name)
@@ -130,6 +131,21 @@ do
                     caption = energy_produced_mw .. "MW"
                 }
             elseif entity.type == "assembling-machine" then
+            end
+
+            local energy_required_flow = exchange_table.add{
+                type = "flow",
+                direction = "vertical"
+            }
+
+            if processing_recipe then
+                energy_required_flow.add{
+                    type = "sprite-button",
+                    enabled = false,
+                    -- TODO: some clock sprite thingy
+                    sprite = "item/transport-belt",
+                    number = processing_recipe.energy
+                }
             end
 
             local ingredient_summary_flow = exchange_table.add{
@@ -188,7 +204,9 @@ do
         player.print(event.entity.name)
         player.print(gui.name)
         for _, p in pairs(global.cflib.prototypes) do
-            player.print(p.entity_item.name)
+            raw_name = core.unmake_composite_factory_name(p.entity.name)
+            processing_recipe_name = core.make_processing_recipe_name(raw_name)
+            player.print(processing_recipe_name)
         end
     end)
 end
