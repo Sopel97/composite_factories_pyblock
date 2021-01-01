@@ -28,9 +28,10 @@ do
         end
 
         player.gui.relative.add{
-            type = "label",
+            type = "frame",
             name = material_exchange_container_gui_name,
-            caption = "Hi!",
+            direction = "vertical",
+            caption = "Material Exchange",
             anchor = {
                 gui = defines.relative_gui_type.container_gui,
                 position = defines.relative_gui_position.right,
@@ -72,8 +73,6 @@ do
         if event.entity.name ~= core.make_container_name("material-exchange-container") then
             return
         end
-
-        -- TODO: the exchange stuff
 
         local player = game.get_player(event.player_index)
         local gui = get_material_exchange_container_gui(player)
