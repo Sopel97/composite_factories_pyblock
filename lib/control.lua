@@ -16,7 +16,6 @@ do
                     entity_item_recipe = game.recipe_prototypes[name]
 
                     table.insert(factories, {
-                        type = e.type,
                         entity = entity,
                         processing_recipe = processing_recipe,
                         entity_item = entity_item,
@@ -30,7 +29,6 @@ do
                     entity_item_recipe = game.recipe_prototypes[name]
 
                     table.insert(factories, {
-                        type = e.type,
                         entity = entity,
                         entity_item = entity_item,
                         entity_item_recipe = entity_item_recipe
@@ -105,11 +103,17 @@ do
             }
 
             for _, ingredient in pairs(entity_item_recipe.ingredients) do
+                local name = ingredient.name
+                local type = ingredient.type
+                local amount = ingredient.amount
+                local item = (type == "item" and game.item_prototypes[name]) or (type == "fluid" and game.fluid_prototypes[name])
+
                 building_ingredients_panel.add{
                     type = "sprite-button",
                     enabled = false,
-                    sprite = ingredient.type .. "/" .. ingredient.name,
-                    number = ingredient.amount
+                    sprite = type .. "/" .. name,
+                    number = amount,
+                    tooltip = {"", ingredient.amount, "x ", item.localised_name}
                 }
             end
 
