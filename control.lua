@@ -1,4 +1,4 @@
 do
-    local cflib = require("lib/control")
+    require("lib/control")
 
 end
