@@ -5,6 +5,7 @@ do
     core.item_group_name = core.name_prefix .. "items"
     core.processing_recipe_group_name = core.name_prefix .. "processing"
     core.processing_recipe_category_name = core.name_prefix .. "processing"
+    core.time_duration_indicator_sprite_name = core.name_prefix .. "time-duration-indicator"
 
     core.make_container_name = function(name)
         return core.name_prefix .. name

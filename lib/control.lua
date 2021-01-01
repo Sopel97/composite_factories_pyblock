@@ -246,8 +246,7 @@ do
                 energy_required_panel.add{
                     type = "sprite-button",
                     enabled = false,
-                    -- TODO: some clock sprite thingy
-                    sprite = "item/transport-belt",
+                    sprite = core.time_duration_indicator_sprite_name,
                     number = processing_recipe.energy
                 }
             end

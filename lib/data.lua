@@ -23,41 +23,50 @@ do
     end
 
     data:extend {
-      {
-          type = "item-group",
-          name = core.item_group_name,
-          order = "z",
-          inventory_order = "z",
-          icon = "__composite_factories_pyblock__/graphics/item-group.png",
-          icon_size = 64
-      },
-      {
-          type = "item-subgroup",
-          name = core.item_group_name,
-          group = core.item_group_name,
-          order = "a"
-      },
-      {
-          type = "item-group",
-          name = core.processing_recipe_group_name,
-          order = "z",
-          inventory_order = "z",
-          icon = "__composite_factories_pyblock__/graphics/processing-recipe-group.png",
-          icon_size = 64
-      },
-      {
-          type = "item-subgroup",
-          name = core.processing_recipe_group_name,
-          group = core.processing_recipe_group_name,
-          order = "a"
-      }
+        {
+            type = "item-group",
+            name = core.item_group_name,
+            order = "z",
+            inventory_order = "z",
+            icon = "__composite_factories_pyblock__/graphics/item-group.png",
+            icon_size = 64
+        },
+        {
+            type = "item-subgroup",
+            name = core.item_group_name,
+            group = core.item_group_name,
+            order = "a"
+        },
+        {
+            type = "item-group",
+            name = core.processing_recipe_group_name,
+            order = "z",
+            inventory_order = "z",
+            icon = "__composite_factories_pyblock__/graphics/processing-recipe-group.png",
+            icon_size = 64
+        },
+        {
+            type = "item-subgroup",
+            name = core.processing_recipe_group_name,
+            group = core.processing_recipe_group_name,
+            order = "a"
+        }
     }
 
     data:extend {
-      {
-          type = "recipe-category",
-          name = core.processing_recipe_category_name
-      }
+        {
+            type = "recipe-category",
+            name = core.processing_recipe_category_name
+        }
+    }
+
+    data:extend {
+        {
+            type = "sprite",
+            name = core.time_duration_indicator_sprite_name,
+            filename = "__core__/graphics/time-editor-icon.png",
+            size = {32, 32}
+        }
     }
 
     -- The container used for material exchange.
