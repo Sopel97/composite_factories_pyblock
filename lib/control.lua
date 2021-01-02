@@ -1,6 +1,53 @@
 do
     local core = require("private/core")
 
+    local cflib = {}
+    cflib.init_flags = {}
+
+    local function multi_index_set(table, indices, value)
+        local t = table
+        local num_indices = #indices
+
+        for i=1,num_indices do
+            local j = indices[i]
+            if i == num_indices then
+                t[j] = value
+            else
+                if not t[j] then
+                    t[j] = {}
+                end
+                t = t[j]
+            end
+        end
+    end
+
+    local function multi_index_get(table, indices)
+        local t = table
+        local num_indices = #indices
+
+        for i=1,num_indices do
+            local j = indices[i]
+            if not t[j] then
+                return nil
+            end
+            t = t[j]
+        end
+
+        return t
+    end
+
+    local function is_initialized(player, name)
+        local player_index = player.index
+
+        return multi_index_get(cflib.init_flags, {player_index, name})
+    end
+
+    local function set_initialized(player, name)
+        local player_index = player.index
+
+        multi_index_set(cflib.init_flags, {player_index, name}, true)
+    end
+
     local function get_composite_factories_prototypes()
         local factories = {}
 
@@ -38,38 +85,6 @@ do
         end
 
         return factories
-    end
-
-    local function multi_index_set(table, indices, value)
-        local t = table
-        local num_indices = #indices
-
-        for i=1,num_indices do
-            local j = indices[i]
-            if i == num_indices then
-                t[j] = value
-            else
-                if not t[j] then
-                    t[j] = {}
-                end
-                t = t[j]
-            end
-        end
-    end
-
-    local function multi_index_get(table, indices)
-        local t = table
-        local num_indices = #indices
-
-        for i=1,num_indices do
-            local j = indices[i]
-            if not t[j] then
-                return nil
-            end
-            t = t[j]
-        end
-
-        return t
     end
 
     local function add_gui_event_handler(event_type, player, gui_element_name, func)
@@ -284,10 +299,20 @@ do
         return gui
     end
 
+    local function setup_material_exchange_container_gui_events(player)
+    end
+
     local function get_material_exchange_container_gui(player)
         local material_exchange_container_gui_name = core.make_gui_element_name("material-exchange-container-gui")
 
-        return player.gui.relative[material_exchange_container_gui_name] or setup_material_exchange_container_gui(player)
+        local gui = player.gui.relative[material_exchange_container_gui_name] or setup_material_exchange_container_gui(player)
+
+        if not is_initialized(player, "material-exchange-container-gui") then
+            setup_material_exchange_container_gui_events(player)
+            set_initialized(player, "material-exchange-container-gui")
+        end
+
+        return gui
     end
 
     local function setup_cache()
