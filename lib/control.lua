@@ -337,8 +337,6 @@ do
             local building_ingredients_panel = building_ingredients_flow[building_ingredients_panel_name]
 
             add_gui_event_handler(defines.events.on_gui_click, player, toggle_visibility_button_name, function(event)
-                player.print("asd")
-
                 if toggle_visibility_button.caption == "S" then
                     toggle_visibility_button.caption = "H"
                 else
@@ -495,14 +493,6 @@ do
         local player = game.get_player(event.player_index)
         local gui = get_material_exchange_container_gui(player)
         update_material_exchange_container_gui(gui, event.entity)
-
-        player.print(event.entity.name)
-        player.print(gui.name)
-        for _, p in pairs(global.prototypes) do
-            raw_name = core.unmake_composite_factory_name(p.entity.name)
-            processing_recipe_name = core.make_processing_recipe_name(raw_name)
-            player.print(processing_recipe_name)
-        end
 
         multi_index_set(global, { "opened_guis", player.index }, { gui = gui, entity = event.entity })
     end)
