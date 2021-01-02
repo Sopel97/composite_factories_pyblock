@@ -57,7 +57,31 @@ do
         return unlocked_recipes[recipe_prototype.name] ~= nil
     end
 
+    local function get_recipe_name_to_technology_map()
+        local technologies_by_recipe = {}
+
+        for _, tech in pairs(game.technology_prototypes) do
+            local tech_name = tech.name
+
+            for _, effect in pairs(tech.effects) do
+                if effect.type == "unlock-recipe" then
+                    local recipe_name = effect.recipe
+
+                    if not technologies_by_recipe[recipe_name] then
+                        technologies_by_recipe[recipe_name] = {tech}
+                    else
+                        table.insert(technologies_by_recipe[recipe_name], tech)
+                    end
+                end
+            end
+        end
+
+        return technologies_by_recipe
+    end
+
     local function get_composite_factories_prototypes()
+        local technologies_by_recipe = get_recipe_name_to_technology_map()
+
         local factories = {}
 
         for name, e in pairs(game.entity_prototypes) do
@@ -70,12 +94,12 @@ do
                     processing_recipe = game.recipe_prototypes[processing_recipe_name]
                     entity_item = game.item_prototypes[name]
                     entity_item_recipe = game.recipe_prototypes[name]
-
                     table.insert(factories, {
                         entity = entity,
                         processing_recipe = processing_recipe,
                         entity_item = entity_item,
-                        entity_item_recipe = entity_item_recipe
+                        entity_item_recipe = entity_item_recipe,
+                        unlocked_by = technologies_by_recipe[entity_item_recipe.name]
                     })
                 end
             elseif e.type == "electric-energy-interface" then
@@ -87,7 +111,8 @@ do
                     table.insert(factories, {
                         entity = entity,
                         entity_item = entity_item,
-                        entity_item_recipe = entity_item_recipe
+                        entity_item_recipe = entity_item_recipe,
+                        unlocked_by = technologies_by_recipe[entity_item_recipe.name]
                     })
                 end
             end
@@ -166,7 +191,9 @@ do
             local entity_item = prototypes.entity_item
             local entity_item_recipe = prototypes.entity_item_recipe
             local processing_recipe = prototypes.processing_recipe
+            local unlocked_by = prototypes.unlocked_by
 
+            local unlocked_by_panel_name = core.make_gui_style_name("material-exchange-container-gui-exchange-unlocked-by-" .. name)
             local exchange_table_row_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-" .. name)
             local exchange_table_row_line_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-line-" .. name)
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
@@ -192,8 +219,8 @@ do
             local exchange_table_row = exchange_table.add{
                 type = "table",
                 name = exchange_table_row_name,
-                -- Craft | Show/hide button | Icon/hidden building ingredients | Product summary | Energy required | Ingredient summary
-                column_count = 6,
+                -- Craft | Show/hide button | Tech icon | Icon/hidden building ingredients | Product summary | Energy required | Ingredient summary
+                column_count = 7,
                 draw_vertical_lines = true,
                 draw_horizontal_lines = true,
                 draw_horizontal_line_after_header = true,
@@ -220,6 +247,20 @@ do
                 caption = "S",
                 style = toggle_visibility_button_style_name
             }
+
+            if unlocked_by then
+                exchange_table_row.add{
+                    type = "sprite-button",
+                    name = unlocked_by_panel_name,
+                    sprite = "technology/" .. unlocked_by[1].name,
+                    style = item_preview_style_name
+                }
+            else
+                exchange_table_row.add{
+                    type = "label",
+                    caption = ""
+                }
+            end
 
             local building_ingredients_flow = exchange_table_row.add{
                 type = "flow",
@@ -478,6 +519,19 @@ do
         return true
     end
 
+    local function can_be_researched(player, technology)
+        local force = player.force
+        local technologies = force.technologies
+
+        for _, prerequisite in pairs(technology.prerequisites) do
+            if not technologies[prerequisite] then
+                return false
+            end
+        end
+
+        return true
+    end
+
     local function update_material_exchange_container_gui(gui, container, player)
         local prev_container_contents_path = {"material_exchange_container", "prev_container_contents", player.index}
         local prev_container_contents = multi_index_get(global, prev_container_contents_path)
@@ -518,7 +572,11 @@ do
             local entity = prototypes.entity
             local entity_item_recipe = prototypes.entity_item_recipe
             local name = entity.name
+            local unlocked_by = prototypes.unlocked_by
 
+            local is_researched = is_recipe_researched(player, entity_item_recipe)
+
+            local unlocked_by_panel_name = core.make_gui_style_name("material-exchange-container-gui-exchange-unlocked-by-" .. name)
             local exchange_table_row_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-" .. name)
             local exchange_table_row_line_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-line-" .. name)
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
@@ -537,6 +595,18 @@ do
             local building_ingredients_flow = exchange_table_row[building_ingredients_flow_name]
             local building_ingredients_preview_panel = building_ingredients_flow[building_ingredients_preview_panel_name]
             local building_ingredients_panel = building_ingredients_flow[building_ingredients_panel_name]
+
+            if unlocked_by then
+                local unlocked_by_panel = exchange_table_row[unlocked_by_panel_name]
+
+                if is_researched then
+                    unlocked_by_panel.style = item_preview_style_normal_name
+                elseif not hide_not_researched and can_be_researched(player, unlocked_by[1]) then
+                    unlocked_by_panel.style = item_preview_style_yellow_name
+                elseif not hide_not_researched then
+                    unlocked_by_panel.style = item_preview_style_red_name
+                end
+            end
 
             local update_sprite_button = function(e)
                 local ingredient_name = e.name
@@ -564,7 +634,7 @@ do
                 end
             end
 
-            local do_hide = (hide_not_craftable and not is_craftable) or (hide_not_researched and not is_recipe_researched(player, entity_item_recipe))
+            local do_hide = (hide_not_craftable and not is_craftable) or (hide_not_researched and not is_researched)
             exchange_table_row.visible = not do_hide
             exchange_table_row_line.visible = not do_hide
         end

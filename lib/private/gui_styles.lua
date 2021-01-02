@@ -65,18 +65,22 @@ do
             },
             {
                 column = 3,
-                width = calc_item_preview_width(5)
-            },
-            {
-                column = 4,
-                width = calc_item_preview_width(2)
-            },
-            {
-                column = 5,
                 width = calc_item_preview_width(1)
             },
             {
+                column = 4,
+                width = calc_item_preview_width(5)
+            },
+            {
+                column = 5,
+                width = calc_item_preview_width(2)
+            },
+            {
                 column = 6,
+                width = calc_item_preview_width(1)
+            },
+            {
+                column = 7,
                 width = calc_item_preview_width(2)
             }
         }
