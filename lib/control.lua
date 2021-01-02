@@ -210,7 +210,7 @@ do
             local energy_required_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-energy-required-panel")
             local building_ingredients_preview_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel")
             local building_ingredients_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-panel")
-            local item_preview_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-normal")
+            local item_preview_style_normal_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-normal")
 
             local num_building_ingredients_columns = 5;
             local num_processing_recipe_ingredients_columns = 2;
@@ -249,11 +249,14 @@ do
             }
 
             if unlocked_by then
+                local tech = unlocked_by[1]
+
                 exchange_table_row.add{
                     type = "sprite-button",
                     name = unlocked_by_panel_name,
-                    sprite = "technology/" .. unlocked_by[1].name,
-                    style = item_preview_style_name
+                    sprite = "technology/" .. tech.name,
+                    style = item_preview_style_normal_name,
+                    tooltip = {"", tech.localised_name},
                 }
             else
                 exchange_table_row.add{
@@ -297,7 +300,7 @@ do
                         sprite = type .. "/" .. name,
                         number = amount,
                         tooltip = {"", 0, "/", amount, " ", item.localised_name},
-                        style = item_preview_style_name
+                        style = item_preview_style_normal_name
                     }
 
                     building_ingredients_panel.add(args)
@@ -329,7 +332,8 @@ do
                     type = "sprite-button",
                     sprite = core.energy_indicator_sprite_name,
                     number = energy_produced_mw * 1000000,
-                    tooltip = {"", energy_produced_mw, "MW"}
+                    tooltip = {"", energy_produced_mw, "MW"},
+                    style = item_preview_style_normal_name
                 }
             elseif entity.type == "assembling-machine" and processing_recipe then
                 for _, product in pairs(processing_recipe.products) do
@@ -342,7 +346,8 @@ do
                         type = "sprite-button",
                         sprite = type .. "/" .. name,
                         number = amount,
-                        tooltip = {"", amount, " ", item.localised_name}
+                        tooltip = {"", amount, " ", item.localised_name},
+                        style = item_preview_style_normal_name
                     }
                 end
             end
@@ -357,7 +362,8 @@ do
                 energy_required_panel.add{
                     type = "sprite-button",
                     sprite = core.time_duration_indicator_sprite_name,
-                    number = processing_recipe.energy
+                    number = processing_recipe.energy,
+                    style = item_preview_style_normal_name
                 }
             end
 
@@ -379,7 +385,8 @@ do
                         type = "sprite-button",
                         sprite = type .. "/" .. name,
                         number = amount,
-                        tooltip = {"", amount, " ", item.localised_name}
+                        tooltip = {"", amount, " ", item.localised_name},
+                        style = item_preview_style_normal_name
                     }
                 end
             end
@@ -585,7 +592,7 @@ do
             local building_ingredients_preview_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel-" .. name)
             local toggle_visibility_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-toggle-visibility-button-" .. name)
 
-            local item_preview_style_normal_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-normal")
+            local item_preview_style_green_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-green")
             local item_preview_style_yellow_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-yellow")
             local item_preview_style_red_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-red")
 
@@ -600,7 +607,7 @@ do
                 local unlocked_by_panel = exchange_table_row[unlocked_by_panel_name]
 
                 if is_researched then
-                    unlocked_by_panel.style = item_preview_style_normal_name
+                    unlocked_by_panel.style = item_preview_style_green_name
                 elseif not hide_not_researched and can_be_researched(player, unlocked_by[1]) then
                     unlocked_by_panel.style = item_preview_style_yellow_name
                 elseif not hide_not_researched then
@@ -612,7 +619,7 @@ do
                 local ingredient_name = e.name
                 local required_amount = e.number
                 local owned_amount = container_contents[ingredient_name] or 0
-                local style = item_preview_style_normal_name
+                local style = item_preview_style_green_name
                 if owned_amount < required_amount then
                     style = item_preview_style_red_name
                 end
