@@ -355,18 +355,37 @@ do
         end
     end
 
-    local function update_material_exchange_container_gui(gui, container)
-        local prev_container_contents = multi_index_get(global, {"material_exchange_container", "prev_container_contents"})
-        if not prev_container_contents then
-            return
+    local function are_tables_equal(a, b)
+        local count = 0
+
+        for _ in pairs(a) do count = count + 1 end
+        for _ in pairs(b) do count = count - 1 end
+
+        if count ~= 0 then
+            return false
         end
+
+        for k, v in pairs(a) do
+            if v ~= b[k] then
+                return false
+            end
+        end
+
+        return true
+    end
+
+    local function update_material_exchange_container_gui(gui, container)
+        local prev_container_contents_path = {"material_exchange_container", "prev_container_contents"}
+        local prev_container_contents = multi_index_get(global, prev_container_contents_path)
 
         local container_inventory = container.get_inventory(defines.inventory.item_main)
         local container_contents = container_inventory.get_contents()
 
-        if table.concat(prev_container_contents) == table.concat(container_inventory) then
+        if prev_container_contents and are_tables_equal(prev_container_contents, container_contents) then
             return
         end
+
+        multi_index_set(global, prev_container_contents_path, container_contents)
 
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
         local exchange_table_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table")
