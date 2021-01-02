@@ -416,8 +416,8 @@ do
         local prev_container_contents_path = {"material_exchange_container", "prev_container_contents", player.index}
         local prev_container_contents = multi_index_get(global, prev_container_contents_path)
 
-        local prev_settings_path = {"material_exchange_container", "prev_settings", player.index}
-        local prev_settings = multi_index_get(global, prev_settings_path)
+        local prev_filters_path = {"material_exchange_container", "prev_filters", player.index}
+        local prev_filters = multi_index_get(global, prev_filters_path)
 
         local hide_not_craftable_checkbox_name = core.make_gui_element_name("material-exchange-container-gui-hide-not-craftable")
         local hide_not_researched_checkbox_name = core.make_gui_element_name("material-exchange-container-gui-hide-not-researched")
@@ -428,25 +428,25 @@ do
         local container_inventory = container.get_inventory(defines.inventory.item_main)
         local container_contents = container_inventory.get_contents()
 
-        local settings = {
+        local filters = {
             hide_not_craftable = hide_not_craftable_checkbox.state,
             hide_not_researched = hide_not_researched_checkbox.state
         }
 
-        if prev_container_contents and are_tables_equal(prev_container_contents, container_contents) and prev_settings and are_tables_equal(prev_settings, settings) then
+        if prev_container_contents and are_tables_equal(prev_container_contents, container_contents) and prev_filters and are_tables_equal(prev_filters, filters) then
             return
         end
 
         multi_index_set(global, prev_container_contents_path, container_contents)
-        multi_index_set(global, prev_settings_path, settings)
+        multi_index_set(global, prev_filters_path, filters)
 
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
         local exchange_table_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table")
 
         local exchange_table = gui[main_pane_name][exchange_table_name]
 
-        local hide_not_craftable = settings.hide_not_craftable
-        local hide_not_researched = settings.hide_not_researched
+        local hide_not_craftable = filters.hide_not_craftable
+        local hide_not_researched = filters.hide_not_researched
 
         local update_exchange_item = function(prototypes)
             local entity = prototypes.entity
