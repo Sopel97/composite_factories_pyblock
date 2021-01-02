@@ -7,7 +7,7 @@ do
 
     local item_preview_size = 40
     local cell_spacing = 0
-    local cell_padding = 1
+    local cell_padding = 0
 
     local function calc_item_preview_width(num_columns)
         return (item_preview_size + cell_padding * 2) * num_columns + cell_spacing * (num_columns - 1) + 4
@@ -36,17 +36,13 @@ do
 
     data_gui_styles[core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel")] = {
         type = "table_style",
-        horizontal_spacing = cell_spacing,
-        vertical_spacing = cell_spacing,
-        cell_padding = cell_padding,
+        parent = "slot_table",
         minimal_width = calc_item_preview_width(5)
     }
 
     data_gui_styles[core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-panel")] = {
         type = "table_style",
-        horizontal_spacing = cell_spacing,
-        vertical_spacing = cell_spacing,
-        cell_padding = cell_padding,
+        parent = "slot_table",
         minimal_width = calc_item_preview_width(5)
     }
 
@@ -86,27 +82,27 @@ do
         }
     }
 
+    data_gui_styles[core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview")] = {
+        type = "button_style",
+        parent = "slot_button",
+        size = item_preview_size
+    }
+
     data_gui_styles[core.make_gui_style_name("material-exchange-container-gui-exchange-table-ingredient-summary-panel")] = {
         type = "table_style",
-        horizontal_spacing = cell_spacing,
-        vertical_spacing = cell_spacing,
-        cell_padding = cell_padding,
+        parent = "slot_table",
         minimal_width = calc_item_preview_width(2)
     }
 
     data_gui_styles[core.make_gui_style_name("material-exchange-container-gui-exchange-table-product-summary-panel")] = {
         type = "table_style",
-        horizontal_spacing = cell_spacing,
-        vertical_spacing = cell_spacing,
-        cell_padding = cell_padding,
+        parent = "slot_table",
         minimal_width = calc_item_preview_width(2)
     }
 
     data_gui_styles[core.make_gui_style_name("material-exchange-container-gui-exchange-table-energy-required-panel")] = {
         type = "table_style",
-        horizontal_spacing = cell_spacing,
-        vertical_spacing = cell_spacing,
-        cell_padding = cell_padding,
+        parent = "slot_table",
         minimal_width = calc_item_preview_width(1)
     }
 

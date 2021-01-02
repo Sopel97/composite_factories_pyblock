@@ -163,6 +163,7 @@ do
             local energy_required_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-energy-required-panel")
             local building_ingredients_preview_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel")
             local building_ingredients_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-panel")
+            local item_preview_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview")
 
             local num_building_ingredients_columns = 5;
             local num_processing_recipe_ingredients_columns = 2;
@@ -215,7 +216,8 @@ do
                         type = "sprite-button",
                         sprite = type .. "/" .. name,
                         number = amount,
-                        tooltip = {"", amount, "x ", item.localised_name}
+                        tooltip = {"", amount, "x ", item.localised_name},
+                        style = item_preview_style_name
                     }
 
                     building_ingredients_panel.add(args)
