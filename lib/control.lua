@@ -108,7 +108,7 @@ do
         local exchange_table_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table")
 
         local gui_style_name = core.make_gui_style_name("material-exchange-container-gui")
-        local exchange_table_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table")
+        local exchange_table_row_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table")
 
         local gui = player.gui.relative.add{
             type = "frame",
@@ -131,15 +131,9 @@ do
         }
 
         local exchange_table = main_gui_pane.add{
-            type = "table",
+            type = "flow",
             name = exchange_table_name,
-            -- Craft | Show/hide button | Icon/hidden building ingredients | Product summary | Energy required | Ingredient summary
-            column_count = 6,
-            draw_vertical_lines = true,
-            draw_horizontal_lines = true,
-            draw_horizontal_line_after_header = true,
-            vertical_centering = false,
-            style = exchange_table_style_name
+            direction = "vertical"
         }
 
         local add_exchange_item = function(prototypes)
@@ -149,6 +143,8 @@ do
             local entity_item_recipe = prototypes.entity_item_recipe
             local processing_recipe = prototypes.processing_recipe
 
+            local exchange_table_row_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-" .. name)
+            local exchange_table_row_line_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-line-" .. name)
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
             local building_ingredients_flow_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-flow-" .. name)
             local building_ingredients_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-panel-" .. name)
@@ -169,21 +165,39 @@ do
             local num_processing_recipe_ingredients_columns = 2;
             local num_processing_recipe_products_columns = 2;
 
+            local exchange_table_row = exchange_table.add{
+                type = "table",
+                name = exchange_table_row_name,
+                -- Craft | Show/hide button | Icon/hidden building ingredients | Product summary | Energy required | Ingredient summary
+                column_count = 6,
+                draw_vertical_lines = true,
+                draw_horizontal_lines = true,
+                draw_horizontal_line_after_header = true,
+                vertical_centering = false,
+                style = exchange_table_row_style_name
+            }
+
             exchange_table.add{
+                type = "line",
+                name = exchange_table_row_line_name,
+                direction = "horizontal"
+            }
+
+            exchange_table_row.add{
                 type = "button",
                 name = craft_button_name,
                 caption = "Craft 1",
                 style = craft_button_style_name
             }
 
-            local toggle_visibility_button = exchange_table.add{
+            local toggle_visibility_button = exchange_table_row.add{
                 type = "button",
                 name = toggle_visibility_button_name,
                 caption = "S",
                 style = toggle_visibility_button_style_name
             }
 
-            local building_ingredients_flow = exchange_table.add{
+            local building_ingredients_flow = exchange_table_row.add{
                 type = "flow",
                 direction = "vertical",
                 name = building_ingredients_flow_name
@@ -236,7 +250,7 @@ do
                 end
             end
 
-            local product_summary_panel = exchange_table.add{
+            local product_summary_panel = exchange_table_row.add{
                 type = "table",
                 column_count = num_processing_recipe_products_columns,
                 direction = "vertical",
@@ -268,7 +282,7 @@ do
                 end
             end
 
-            local energy_required_panel = exchange_table.add{
+            local energy_required_panel = exchange_table_row.add{
                 type = "table",
                 column_count = 1,
                 style = energy_required_panel_style_name
@@ -282,7 +296,7 @@ do
                 }
             end
 
-            local ingredient_summary_panel = exchange_table.add{
+            local ingredient_summary_panel = exchange_table_row.add{
                 type = "table",
                 column_count = num_processing_recipe_ingredients_columns,
                 direction = "vertical",
@@ -325,14 +339,16 @@ do
             local entity = prototypes.entity
             local name = entity.name
 
+            local exchange_table_row_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-" .. name)
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
             local building_ingredients_flow_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-flow-" .. name)
             local building_ingredients_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-panel-" .. name)
             local building_ingredients_preview_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel-" .. name)
             local toggle_visibility_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-toggle-visibility-button-" .. name)
 
-            local toggle_visibility_button = exchange_table[toggle_visibility_button_name]
-            local building_ingredients_flow = exchange_table[building_ingredients_flow_name]
+            local exchange_table_row = exchange_table[exchange_table_row_name]
+            local toggle_visibility_button = exchange_table_row[toggle_visibility_button_name]
+            local building_ingredients_flow = exchange_table_row[building_ingredients_flow_name]
             local building_ingredients_preview_panel = building_ingredients_flow[building_ingredients_preview_panel_name]
             local building_ingredients_panel = building_ingredients_flow[building_ingredients_panel_name]
 
@@ -394,6 +410,7 @@ do
             local entity = prototypes.entity
             local name = entity.name
 
+            local exchange_table_row_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-" .. name)
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
             local building_ingredients_flow_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-flow-" .. name)
             local building_ingredients_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-panel-" .. name)
@@ -404,8 +421,9 @@ do
             local item_preview_style_yellow_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-yellow")
             local item_preview_style_red_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-red")
 
-            local toggle_visibility_button = exchange_table[toggle_visibility_button_name]
-            local building_ingredients_flow = exchange_table[building_ingredients_flow_name]
+            local exchange_table_row = exchange_table[exchange_table_row_name]
+            local toggle_visibility_button = exchange_table_row[toggle_visibility_button_name]
+            local building_ingredients_flow = exchange_table_row[building_ingredients_flow_name]
             local building_ingredients_preview_panel = building_ingredients_flow[building_ingredients_preview_panel_name]
             local building_ingredients_panel = building_ingredients_flow[building_ingredients_panel_name]
 
