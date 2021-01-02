@@ -82,9 +82,21 @@ do
         }
     }
 
-    data_gui_styles[core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview")] = {
+    data_gui_styles[core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-normal")] = {
         type = "button_style",
         parent = "slot_button",
+        size = item_preview_size
+    }
+
+    data_gui_styles[core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-yellow")] = {
+        type = "button_style",
+        parent = "yellow_slot_button",
+        size = item_preview_size
+    }
+
+    data_gui_styles[core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-red")] = {
+        type = "button_style",
+        parent = "red_slot_button",
         size = item_preview_size
     }
 

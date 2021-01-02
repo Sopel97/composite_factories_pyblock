@@ -163,7 +163,7 @@ do
             local energy_required_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-energy-required-panel")
             local building_ingredients_preview_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel")
             local building_ingredients_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-panel")
-            local item_preview_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview")
+            local item_preview_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-normal")
 
             local num_building_ingredients_columns = 5;
             local num_processing_recipe_ingredients_columns = 2;
