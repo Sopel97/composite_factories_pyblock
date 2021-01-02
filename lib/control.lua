@@ -351,6 +351,65 @@ do
         return gui
     end
 
+    local function is_craftable_from(recipe, item_stacks)
+        for _, ingredient in pairs(recipe.ingredients) do
+            local count = item_stacks[ingredient.name]
+            if not count or count < ingredient.amount then
+                return false
+            end
+        end
+
+        return true
+    end
+
+    local function craft_inside_inventory(player, inventory, recipe)
+        for _, ingredient in pairs(recipe.ingredients) do
+            inventory.remove({
+                name = ingredient.name,
+                count = ingredient.amount
+            })
+        end
+
+        for _, product in pairs(recipe.products) do
+            inventory.insert({
+                name = product.name,
+                count = product.amount
+            })
+        end
+    end
+
+    local function try_craft_inside_inventory(player, container, recipe_prototype)
+        local force = player.force
+        local recipe = force.recipes[recipe_prototype.name]
+        if not recipe then
+            return
+        end
+
+        local container_inventory = container.get_inventory(defines.inventory.item_main)
+        local container_contents = container_inventory.get_contents()
+
+        local num_products = #recipe.products
+
+        if container_inventory.count_empty_stacks() < num_products then
+            player.print("Not enough space in the container to craft.")
+            return false
+        end
+
+        if not is_craftable_from(recipe, container_contents) then
+            player.print("Not enough ingredients in the container to craft.")
+            return false
+        end
+
+        if not is_recipe_researched(player, recipe_prototype) then
+            player.print("Recipe is not researched.")
+            return false
+        end
+
+        craft_inside_inventory(player, container_inventory, recipe)
+
+        return true
+    end
+
     local function setup_material_exchange_container_gui_events(player)
         local gui_name = core.make_gui_element_name("material-exchange-container-gui")
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
@@ -361,6 +420,7 @@ do
 
         local add_events_for_exchange_item = function(prototypes)
             local entity = prototypes.entity
+            local entity_item_recipe = prototypes.entity_item_recipe
             local name = entity.name
 
             local exchange_table_row_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-" .. name)
@@ -375,6 +435,12 @@ do
             local building_ingredients_flow = exchange_table_row[building_ingredients_flow_name]
             local building_ingredients_preview_panel = building_ingredients_flow[building_ingredients_preview_panel_name]
             local building_ingredients_panel = building_ingredients_flow[building_ingredients_panel_name]
+
+            add_gui_event_handler(defines.events.on_gui_click, player, craft_button_name, function(event)
+                local opened_entity = player.opened
+                -- TODO: this should always point to the container but we might add some assertions in the future
+                try_craft_inside_inventory(player, opened_entity, entity_item_recipe)
+            end)
 
             add_gui_event_handler(defines.events.on_gui_click, player, toggle_visibility_button_name, function(event)
                 if toggle_visibility_button.caption == "S" then
