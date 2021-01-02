@@ -214,9 +214,10 @@ do
 
                     local args = {
                         type = "sprite-button",
+                        name = name,
                         sprite = type .. "/" .. name,
                         number = amount,
-                        tooltip = {"", amount, "x ", item.localised_name},
+                        tooltip = {"", 0, "/", amount, "x ", item.localised_name},
                         style = item_preview_style_name
                     }
 
@@ -346,14 +347,61 @@ do
                 building_ingredients_preview_panel.visible = not building_ingredients_preview_panel.visible
                 building_ingredients_panel.visible = not building_ingredients_panel.visible
             end)
-
         end
 
         for _, p in pairs(global.prototypes) do
             add_events_for_exchange_item(p)
         end
+    end
 
-end
+    local function update_material_exchange_container_gui(gui, container)
+        local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
+        local exchange_table_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table")
+
+        local exchange_table = gui[main_pane_name][exchange_table_name]
+
+        local container_inventory = container.get_inventory(defines.inventory.item_main)
+        local container_contents = container_inventory.get_contents()
+
+        local update_exchange_item = function(prototypes)
+            local entity = prototypes.entity
+            local name = entity.name
+
+            local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
+            local building_ingredients_flow_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-flow-" .. name)
+            local building_ingredients_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-panel-" .. name)
+            local building_ingredients_preview_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel-" .. name)
+            local toggle_visibility_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-toggle-visibility-button-" .. name)
+
+            local item_preview_style_normal_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-normal")
+            local item_preview_style_yellow_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-yellow")
+            local item_preview_style_red_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-red")
+
+            local toggle_visibility_button = exchange_table[toggle_visibility_button_name]
+            local building_ingredients_flow = exchange_table[building_ingredients_flow_name]
+            local building_ingredients_preview_panel = building_ingredients_flow[building_ingredients_preview_panel_name]
+            local building_ingredients_panel = building_ingredients_flow[building_ingredients_panel_name]
+
+            for _, e in pairs(building_ingredients_preview_panel.children) do
+                if e.type == "sprite-button" then
+                    local ingredient_name = e.name
+                    local required_amount = e.number
+                    local owned_amount = container_contents[ingredient_name] or 0
+                    local style = item_preview_style_normal_name
+                    if owned_amount < required_amount then
+                        style = item_preview_style_red_name
+                    end
+
+                    e.tooltip[2] = owned_amount
+                    e.style = style
+                end
+            end
+        end
+
+        for _, p in pairs(global.prototypes) do
+            update_exchange_item(p)
+        end
+    end
 
     local function get_material_exchange_container_gui(player)
         local material_exchange_container_gui_name = core.make_gui_element_name("material-exchange-container-gui")
@@ -406,6 +454,7 @@ end
 
         local player = game.get_player(event.player_index)
         local gui = get_material_exchange_container_gui(player)
+        update_material_exchange_container_gui(gui, event.entity)
 
         player.print(event.entity.name)
         player.print(gui.name)
