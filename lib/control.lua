@@ -506,26 +506,22 @@ do
         end
     end)
 
-    local on_tick_while_open = {}
-    on_tick_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui, tick)
-        if tick % 10 ~= 0 then
-            return
-        end
-
+    local on_every_10th_tick_while_open = {}
+    on_tick_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
         local gui = opened_gui.gui
         local entity = opened_gui.entity
         update_material_exchange_container_gui(gui, entity)
     end
 
-    script.on_nth_tick(1, function(event)
+    script.on_nth_tick(10, function(event)
         for _, player in pairs(game.players) do
             local player_index = player.index
 
             local opened_gui = multi_index_get(global, { "opened_guis", player_index })
             if opened_gui then
-                local func = on_tick_while_open[opened_gui.gui.name]
+                local func = on_every_10th_tick_while_open[opened_gui.gui.name]
                 if func then
-                    func(player, opened_gui, event.tick)
+                    func(player, opened_gui)
                 end
             end
         end
