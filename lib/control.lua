@@ -1,8 +1,10 @@
 do
     local core = require("private/core")
 
-    local cflib = {}
-    cflib.init_flags = {}
+    local cflib = {
+        init_flags = {},
+        event_handlers = {}
+    }
 
     local function multi_index_set(table, indices, value)
         local t = table
@@ -90,14 +92,14 @@ do
     local function add_gui_event_handler(event_type, player, gui_element_name, func)
         local player_index = player.index
 
-        multi_index_set(global.cflib.event_handlers, {player_index, event_type, gui_element_name}, func)
+        multi_index_set(cflib.event_handlers, {player_index, event_type, gui_element_name}, func)
     end
 
     local function get_gui_event_handler(event_type, event)
         local player_index = event.player_index
         local gui_element_name = event.element.name
 
-        return multi_index_get(global.cflib.event_handlers, {player_index, event_type, gui_element_name})
+        return multi_index_get(cflib.event_handlers, {player_index, event_type, gui_element_name})
     end
 
     local function setup_material_exchange_container_gui(player)
@@ -142,6 +144,7 @@ do
             local processing_recipe = prototypes.processing_recipe
 
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
+            local building_ingredients_flow_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-flow-" .. name)
             local building_ingredients_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-panel-" .. name)
             local building_ingredients_preview_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel-" .. name)
             local toggle_visibility_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-toggle-visibility-button-" .. name)
@@ -162,36 +165,24 @@ do
                 caption = "S"
             }
 
-            local building_ingredients_panel_flow = exchange_table.add{
+            local building_ingredients_flow = exchange_table.add{
                 type = "flow",
-                direction = "vertical"
+                direction = "vertical",
+                name = building_ingredients_flow_name
             }
 
-            local building_ingredients_preview_panel = building_ingredients_panel_flow.add{
+            local building_ingredients_preview_panel = building_ingredients_flow.add{
                 type = "table",
                 column_count = num_building_ingredients_columns,
                 name = building_ingredients_preview_panel_name
             }
 
-            local building_ingredients_panel = building_ingredients_panel_flow.add{
+            local building_ingredients_panel = building_ingredients_flow.add{
                 type = "table",
                 column_count = num_building_ingredients_columns,
                 name = building_ingredients_panel_name,
                 visible = false
             }
-
-            add_gui_event_handler(defines.events.on_gui_click, player, toggle_visibility_button_name, function(event)
-                player.print("asd")
-
-                if toggle_visibility_button.caption == "S" then
-                    toggle_visibility_button.caption = "H"
-                else
-                    toggle_visibility_button.caption = "S"
-                end
-
-                building_ingredients_preview_panel.visible = not building_ingredients_preview_panel.visible
-                building_ingredients_panel.visible = not building_ingredients_panel.visible
-            end)
 
             do
                 local i = 0
@@ -292,7 +283,7 @@ do
             end
         end
 
-        for _, p in pairs(global.cflib.prototypes) do
+        for _, p in pairs(global.prototypes) do
             add_exchange_item(p)
         end
 
@@ -300,7 +291,47 @@ do
     end
 
     local function setup_material_exchange_container_gui_events(player)
-    end
+        local gui_name = core.make_gui_element_name("material-exchange-container-gui")
+        local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
+        local exchange_table_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table")
+
+        local exchange_table = player.gui.relative[gui_name][main_pane_name][exchange_table_name]
+
+        local add_events_for_exchange_item = function(prototypes)
+            local entity = prototypes.entity
+            local name = entity.name
+
+            local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
+            local building_ingredients_flow_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-flow-" .. name)
+            local building_ingredients_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-panel-" .. name)
+            local building_ingredients_preview_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel-" .. name)
+            local toggle_visibility_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-toggle-visibility-button-" .. name)
+
+            local toggle_visibility_button = exchange_table[toggle_visibility_button_name]
+            local building_ingredients_flow = exchange_table[building_ingredients_flow_name]
+            local building_ingredients_preview_panel = building_ingredients_flow[building_ingredients_preview_panel_name]
+            local building_ingredients_panel = building_ingredients_flow[building_ingredients_panel_name]
+
+            add_gui_event_handler(defines.events.on_gui_click, player, toggle_visibility_button_name, function(event)
+                player.print("asd")
+
+                if toggle_visibility_button.caption == "S" then
+                    toggle_visibility_button.caption = "H"
+                else
+                    toggle_visibility_button.caption = "S"
+                end
+
+                building_ingredients_preview_panel.visible = not building_ingredients_preview_panel.visible
+                building_ingredients_panel.visible = not building_ingredients_panel.visible
+            end)
+
+        end
+
+        for _, p in pairs(global.prototypes) do
+            add_events_for_exchange_item(p)
+        end
+
+end
 
     local function get_material_exchange_container_gui(player)
         local material_exchange_container_gui_name = core.make_gui_element_name("material-exchange-container-gui")
@@ -316,14 +347,10 @@ do
     end
 
     local function setup_cache()
-        global.cflib.prototypes = get_composite_factories_prototypes()
+        global.prototypes = get_composite_factories_prototypes()
     end
 
     script.on_init(function()
-        global.cflib = {
-            event_handlers = {}
-        }
-
         setup_cache()
     end)
 
@@ -360,7 +387,7 @@ do
 
         player.print(event.entity.name)
         player.print(gui.name)
-        for _, p in pairs(global.cflib.prototypes) do
+        for _, p in pairs(global.prototypes) do
             raw_name = core.unmake_composite_factory_name(p.entity.name)
             processing_recipe_name = core.make_processing_recipe_name(raw_name)
             player.print(processing_recipe_name)
