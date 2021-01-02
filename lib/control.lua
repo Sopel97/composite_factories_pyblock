@@ -318,7 +318,8 @@ do
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
         local exchange_table_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table")
 
-        local exchange_table = player.gui.relative[gui_name][main_pane_name][exchange_table_name]
+        local gui = player.gui.relative[gui_name]
+        local exchange_table = gui[main_pane_name][exchange_table_name]
 
         local add_events_for_exchange_item = function(prototypes)
             local entity = prototypes.entity
@@ -382,20 +383,31 @@ do
             local building_ingredients_preview_panel = building_ingredients_flow[building_ingredients_preview_panel_name]
             local building_ingredients_panel = building_ingredients_flow[building_ingredients_panel_name]
 
+            local update_sprite_button = function(e)
+                local ingredient_name = e.name
+                local required_amount = e.number
+                local owned_amount = container_contents[ingredient_name] or 0
+                local style = item_preview_style_normal_name
+                if owned_amount < required_amount then
+                    style = item_preview_style_red_name
+                end
+
+                e.tooltip[2] = owned_amount
+                e.style = style
+            end
+
             for _, e in pairs(building_ingredients_preview_panel.children) do
                 if e.type == "sprite-button" then
-                    local ingredient_name = e.name
-                    local required_amount = e.number
-                    local owned_amount = container_contents[ingredient_name] or 0
-                    local style = item_preview_style_normal_name
-                    if owned_amount < required_amount then
-                        style = item_preview_style_red_name
-                    end
-
-                    e.tooltip[2] = owned_amount
-                    e.style = style
+                    update_sprite_button(e)
                 end
             end
+
+            for _, e in pairs(building_ingredients_panel.children) do
+                if e.type == "sprite-button" then
+                    update_sprite_button(e)
+                end
+            end
+
         end
 
         for _, p in pairs(global.prototypes) do
@@ -462,6 +474,60 @@ do
             raw_name = core.unmake_composite_factory_name(p.entity.name)
             processing_recipe_name = core.make_processing_recipe_name(raw_name)
             player.print(processing_recipe_name)
+        end
+
+        multi_index_set(global, { "opened_guis", player.index }, { gui = gui, entity = event.entity })
+    end)
+
+    script.on_event(defines.events.on_gui_closed, function(event)
+        if not event.gui_type == defines.gui_type.entity then
+            return
+        end
+
+        if event.entity == nil then
+            return
+        end
+
+        if event.entity.type ~= "container" then
+            return
+        end
+
+        if event.entity.name ~= core.make_container_name("material-exchange-container") then
+            return
+        end
+
+        local player = game.get_player(event.player_index)
+        local gui = get_material_exchange_container_gui(player)
+
+        local path = { "opened_guis", player.index }
+        local opened_gui = multi_index_get(global, path)
+        if opened_gui and opened_gui.gui.name == gui.name then
+            multi_index_set(global, path, nil)
+        end
+    end)
+
+    local on_tick_while_open = {}
+    on_tick_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui, tick)
+        if tick % 10 ~= 0 then
+            return
+        end
+
+        local gui = opened_gui.gui
+        local entity = opened_gui.entity
+        update_material_exchange_container_gui(gui, entity)
+    end
+
+    script.on_nth_tick(1, function(event)
+        for _, player in pairs(game.players) do
+            local player_index = player.index
+
+            local opened_gui = multi_index_get(global, { "opened_guis", player_index })
+            if opened_gui then
+                local func = on_tick_while_open[opened_gui.gui.name]
+                if func then
+                    func(player, opened_gui, event.tick)
+                end
+            end
         end
     end)
 end
