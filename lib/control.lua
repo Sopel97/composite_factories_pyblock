@@ -356,13 +356,22 @@ do
     end
 
     local function update_material_exchange_container_gui(gui, container)
+        local prev_container_contents = multi_index_get(global, {"material_exchange_container", "prev_container_contents"})
+        if not prev_container_contents then
+            return
+        end
+
+        local container_inventory = container.get_inventory(defines.inventory.item_main)
+        local container_contents = container_inventory.get_contents()
+
+        if table.concat(prev_container_contents) == table.concat(container_inventory) then
+            return
+        end
+
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
         local exchange_table_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table")
 
         local exchange_table = gui[main_pane_name][exchange_table_name]
-
-        local container_inventory = container.get_inventory(defines.inventory.item_main)
-        local container_contents = container_inventory.get_contents()
 
         local update_exchange_item = function(prototypes)
             local entity = prototypes.entity
@@ -507,7 +516,7 @@ do
     end)
 
     local on_every_10th_tick_while_open = {}
-    on_tick_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
+    on_every_10th_tick_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
         local gui = opened_gui.gui
         local entity = opened_gui.entity
         update_material_exchange_container_gui(gui, entity)
