@@ -50,6 +50,13 @@ do
         multi_index_set(cflib.init_flags, {player_index, name}, true)
     end
 
+    local function is_recipe_researched(player, recipe_prototype)
+        local force = player.force
+        local unlocked_recipes = force.recipes
+
+        return unlocked_recipes[recipe_prototype.name] ~= nil
+    end
+
     local function get_composite_factories_prototypes()
         local factories = {}
 
@@ -388,7 +395,7 @@ do
         return true
     end
 
-    local function update_material_exchange_container_gui(gui, container)
+    local function update_material_exchange_container_gui(gui, container, player)
         local prev_container_contents_path = {"material_exchange_container", "prev_container_contents"}
         local prev_container_contents = multi_index_get(global, prev_container_contents_path)
 
@@ -408,9 +415,11 @@ do
 
         local update_exchange_item = function(prototypes)
             local entity = prototypes.entity
+            local entity_item_recipe = prototypes.entity_item_recipe
             local name = entity.name
 
             local exchange_table_row_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-" .. name)
+            local exchange_table_row_line_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-row-line-" .. name)
             local craft_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-craft-" .. name)
             local building_ingredients_flow_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-flow-" .. name)
             local building_ingredients_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-panel-" .. name)
@@ -422,6 +431,7 @@ do
             local item_preview_style_red_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-item-preview-red")
 
             local exchange_table_row = exchange_table[exchange_table_row_name]
+            local exchange_table_row_line = exchange_table[exchange_table_row_line_name]
             local toggle_visibility_button = exchange_table_row[toggle_visibility_button_name]
             local building_ingredients_flow = exchange_table_row[building_ingredients_flow_name]
             local building_ingredients_preview_panel = building_ingredients_flow[building_ingredients_preview_panel_name]
@@ -446,12 +456,16 @@ do
                 end
             end
 
+            local is_craftable = true
             for _, e in pairs(building_ingredients_panel.children) do
                 if e.type == "sprite-button" then
-                    update_sprite_button(e)
+                    is_craftable = update_sprite_button(e) and is_craftable
                 end
             end
 
+            local do_hide = (global.hide_not_craftable and not is_craftable) or (global.hide_not_researched and not is_recipe_researched(player, entity_item_recipe))
+            exchange_table_row.visible = not do_hide
+            exchange_table_row_line.visible = not do_hide
         end
 
         for _, p in pairs(global.prototypes) do
@@ -478,6 +492,9 @@ do
 
     script.on_init(function()
         setup_cache()
+
+        global.hide_not_researched = true
+        global.hide_not_craftable = false
     end)
 
     script.on_configuration_changed(function(event)
@@ -510,7 +527,7 @@ do
 
         local player = game.get_player(event.player_index)
         local gui = get_material_exchange_container_gui(player)
-        update_material_exchange_container_gui(gui, event.entity)
+        update_material_exchange_container_gui(gui, event.entity, player)
 
         multi_index_set(global, { "opened_guis", player.index }, { gui = gui, entity = event.entity })
     end)
@@ -546,7 +563,7 @@ do
     on_every_10th_tick_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
         local gui = opened_gui.gui
         local entity = opened_gui.entity
-        update_material_exchange_container_gui(gui, entity)
+        update_material_exchange_container_gui(gui, entity, player)
     end
 
     script.on_nth_tick(10, function(event)
