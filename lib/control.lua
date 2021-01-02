@@ -117,6 +117,9 @@ do
         local gui_style_name = core.make_gui_style_name("material-exchange-container-gui")
         local exchange_table_row_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table")
 
+        local hide_not_craftable_checkbox_name = core.make_gui_element_name("material-exchange-container-gui-hide-not-craftable")
+        local hide_not_researched_checkbox_name = core.make_gui_element_name("material-exchange-container-gui-hide-not-researched")
+
         local gui = player.gui.relative.add{
             type = "frame",
             name = gui_name,
@@ -128,6 +131,20 @@ do
                 name = core.make_container_name("material-exchange-container")
             },
             style = gui_style_name
+        }
+
+        gui.add{
+            type = "checkbox",
+            name = hide_not_craftable_checkbox_name,
+            caption = {"", "Hide not craftable"},
+            state = false
+        }
+
+        gui.add{
+            type = "checkbox",
+            name = hide_not_researched_checkbox_name,
+            caption = {"", "Hide not researched"},
+            state = true
         }
 
         local main_gui_pane = gui.add{
@@ -396,22 +413,40 @@ do
     end
 
     local function update_material_exchange_container_gui(gui, container, player)
-        local prev_container_contents_path = {"material_exchange_container", "prev_container_contents"}
+        local prev_container_contents_path = {"material_exchange_container", "prev_container_contents", player.index}
         local prev_container_contents = multi_index_get(global, prev_container_contents_path)
+
+        local prev_settings_path = {"material_exchange_container", "prev_settings", player.index}
+        local prev_settings = multi_index_get(global, prev_settings_path)
+
+        local hide_not_craftable_checkbox_name = core.make_gui_element_name("material-exchange-container-gui-hide-not-craftable")
+        local hide_not_researched_checkbox_name = core.make_gui_element_name("material-exchange-container-gui-hide-not-researched")
+
+        local hide_not_craftable_checkbox = gui[hide_not_craftable_checkbox_name]
+        local hide_not_researched_checkbox = gui[hide_not_researched_checkbox_name]
 
         local container_inventory = container.get_inventory(defines.inventory.item_main)
         local container_contents = container_inventory.get_contents()
 
-        if prev_container_contents and are_tables_equal(prev_container_contents, container_contents) then
+        local settings = {
+            hide_not_craftable = hide_not_craftable_checkbox.state,
+            hide_not_researched = hide_not_researched_checkbox.state
+        }
+
+        if prev_container_contents and are_tables_equal(prev_container_contents, container_contents) and prev_settings and are_tables_equal(prev_settings, settings) then
             return
         end
 
         multi_index_set(global, prev_container_contents_path, container_contents)
+        multi_index_set(global, prev_settings_path, settings)
 
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
         local exchange_table_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table")
 
         local exchange_table = gui[main_pane_name][exchange_table_name]
+
+        local hide_not_craftable = settings.hide_not_craftable
+        local hide_not_researched = settings.hide_not_researched
 
         local update_exchange_item = function(prototypes)
             local entity = prototypes.entity
@@ -463,7 +498,7 @@ do
                 end
             end
 
-            local do_hide = (global.hide_not_craftable and not is_craftable) or (global.hide_not_researched and not is_recipe_researched(player, entity_item_recipe))
+            local do_hide = (hide_not_craftable and not is_craftable) or (hide_not_researched and not is_recipe_researched(player, entity_item_recipe))
             exchange_table_row.visible = not do_hide
             exchange_table_row_line.visible = not do_hide
         end
@@ -492,9 +527,6 @@ do
 
     script.on_init(function()
         setup_cache()
-
-        global.hide_not_researched = true
-        global.hide_not_craftable = false
     end)
 
     script.on_configuration_changed(function(event)
