@@ -213,7 +213,6 @@ do
 
                     local args = {
                         type = "sprite-button",
-                        enabled = false,
                         sprite = type .. "/" .. name,
                         number = amount,
                         tooltip = {"", amount, "x ", item.localised_name}
@@ -246,7 +245,6 @@ do
 
                 product_summary_panel.add{
                     type = "sprite-button",
-                    enabled = false,
                     sprite = core.energy_indicator_sprite_name,
                     number = energy_produced_mw * 1000000,
                     tooltip = {"", energy_produced_mw, "MW"}
@@ -260,7 +258,6 @@ do
 
                     product_summary_panel.add{
                         type = "sprite-button",
-                        enabled = false,
                         sprite = type .. "/" .. name,
                         number = amount,
                         tooltip = {"", amount, "x ", item.localised_name}
@@ -277,7 +274,6 @@ do
             if processing_recipe then
                 energy_required_panel.add{
                     type = "sprite-button",
-                    enabled = false,
                     sprite = core.time_duration_indicator_sprite_name,
                     number = processing_recipe.energy
                 }
@@ -299,7 +295,6 @@ do
 
                     ingredient_summary_panel.add{
                         type = "sprite-button",
-                        enabled = false,
                         sprite = type .. "/" .. name,
                         number = amount,
                         tooltip = {"", amount, "x ", item.localised_name}
