@@ -71,6 +71,15 @@ do
         }
     }
 
+    data:extend {
+        {
+            type = "sprite",
+            name = core.energy_indicator_sprite_name,
+            filename = "__core__/graphics/icons/alerts/electricity-icon-unplugged.png",
+            size = {64, 64}
+        }
+    }
+
     -- The container used for material exchange.
     local function add_container(args)
         local full_name = core.make_container_name(args.name)

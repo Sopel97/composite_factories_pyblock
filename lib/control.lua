@@ -107,6 +107,9 @@ do
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
         local exchange_table_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table")
 
+        local gui_style_name = core.make_gui_style_name("material-exchange-container-gui")
+        local exchange_table_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table")
+
         local gui = player.gui.relative.add{
             type = "frame",
             name = gui_name,
@@ -116,13 +119,15 @@ do
                 gui = defines.relative_gui_type.container_gui,
                 position = defines.relative_gui_position.right,
                 name = core.make_container_name("material-exchange-container")
-            }
+            },
+            style = gui_style_name
         }
 
         local main_gui_pane = gui.add{
             type = "scroll-pane",
             name = main_pane_name,
-            vertical_scroll_policy = "auto-and-reserve-space"
+            vertical_scroll_policy = "auto-and-reserve-space",
+            horizontal_scroll_policy = "never"
         }
 
         local exchange_table = main_gui_pane.add{
@@ -133,7 +138,8 @@ do
             draw_vertical_lines = true,
             draw_horizontal_lines = true,
             draw_horizontal_line_after_header = true,
-            vertical_centering = false
+            vertical_centering = false,
+            style = exchange_table_style_name
         }
 
         local add_exchange_item = function(prototypes)
@@ -149,20 +155,31 @@ do
             local building_ingredients_preview_panel_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel-" .. name)
             local toggle_visibility_button_name = core.make_gui_element_name("material-exchange-container-gui-exchange-table-toggle-visibility-button-" .. name)
 
+            local craft_button_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-craft")
+            local toggle_visibility_button_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-toggle-visibility-button")
+            local building_ingredients_flow_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-flow")
+            local ingredient_summary_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-ingredient-summary-panel")
+            local product_summary_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-product-summary-panel")
+            local energy_required_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-energy-required-panel")
+            local building_ingredients_preview_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-preview-panel")
+            local building_ingredients_panel_style_name = core.make_gui_style_name("material-exchange-container-gui-exchange-table-building-ingredients-panel")
+
             local num_building_ingredients_columns = 5;
-            local num_processing_recipe_ingredients_columns = 3;
-            local num_processing_recipe_products_columns = 3;
+            local num_processing_recipe_ingredients_columns = 2;
+            local num_processing_recipe_products_columns = 2;
 
             exchange_table.add{
                 type = "button",
                 name = craft_button_name,
-                caption = "Craft 1"
+                caption = "Craft 1",
+                style = craft_button_style_name
             }
 
             local toggle_visibility_button = exchange_table.add{
                 type = "button",
                 name = toggle_visibility_button_name,
-                caption = "S"
+                caption = "S",
+                style = toggle_visibility_button_style_name
             }
 
             local building_ingredients_flow = exchange_table.add{
@@ -174,14 +191,16 @@ do
             local building_ingredients_preview_panel = building_ingredients_flow.add{
                 type = "table",
                 column_count = num_building_ingredients_columns,
-                name = building_ingredients_preview_panel_name
+                name = building_ingredients_preview_panel_name,
+                style = building_ingredients_preview_panel_style_name
             }
 
             local building_ingredients_panel = building_ingredients_flow.add{
                 type = "table",
                 column_count = num_building_ingredients_columns,
                 name = building_ingredients_panel_name,
-                visible = false
+                visible = false,
+                style = building_ingredients_panel_style_name
             }
 
             do
@@ -218,15 +237,19 @@ do
             local product_summary_panel = exchange_table.add{
                 type = "table",
                 column_count = num_processing_recipe_products_columns,
-                direction = "vertical"
+                direction = "vertical",
+                style = product_summary_panel_style_name
             }
 
             if entity.type == "electric-energy-interface" then
                 local energy_produced_mw = entity.max_energy_production * 60.0 / 1000000.0
 
                 product_summary_panel.add{
-                    type = "label",
-                    caption = energy_produced_mw .. "MW"
+                    type = "sprite-button",
+                    enabled = false,
+                    sprite = core.energy_indicator_sprite_name,
+                    number = energy_produced_mw * 1000000,
+                    tooltip = {"", energy_produced_mw, "MW"}
                 }
             elseif entity.type == "assembling-machine" and processing_recipe then
                 for _, product in pairs(processing_recipe.products) do
@@ -246,8 +269,9 @@ do
             end
 
             local energy_required_panel = exchange_table.add{
-                type = "flow",
-                direction = "vertical"
+                type = "table",
+                column_count = 1,
+                style = energy_required_panel_style_name
             }
 
             if processing_recipe then
@@ -262,7 +286,8 @@ do
             local ingredient_summary_panel = exchange_table.add{
                 type = "table",
                 column_count = num_processing_recipe_ingredients_columns,
-                direction = "vertical"
+                direction = "vertical",
+                style = ingredient_summary_panel_style_name
             }
 
             if processing_recipe then
