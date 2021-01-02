@@ -217,7 +217,7 @@ do
                         name = name,
                         sprite = type .. "/" .. name,
                         number = amount,
-                        tooltip = {"", 0, "/", amount, "x ", item.localised_name},
+                        tooltip = {"", 0, "/", amount, " ", item.localised_name},
                         style = item_preview_style_name
                     }
 
@@ -263,7 +263,7 @@ do
                         type = "sprite-button",
                         sprite = type .. "/" .. name,
                         number = amount,
-                        tooltip = {"", amount, "x ", item.localised_name}
+                        tooltip = {"", amount, " ", item.localised_name}
                     }
                 end
             end
@@ -300,7 +300,7 @@ do
                         type = "sprite-button",
                         sprite = type .. "/" .. name,
                         number = amount,
-                        tooltip = {"", amount, "x ", item.localised_name}
+                        tooltip = {"", amount, " ", item.localised_name}
                     }
                 end
             end
@@ -418,7 +418,7 @@ do
                     style = item_preview_style_red_name
                 end
 
-                e.tooltip[2] = owned_amount
+                e.tooltip = {"", owned_amount, "/", required_amount, " ", e.tooltip[6]}
                 e.style = style
             end
 
