@@ -102,4 +102,30 @@ do
         emissions_per_minute = 1.68,
         unlocked_by = cflib.base_technology
     }
+
+    cflib.add_composite_factory{
+        name = "quartz-0",
+        ingredients = {},
+        results = {
+            {"ore-quartz", 3}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 200},
+            {"underground-belt", 12},
+            {"pipe-to-ground", 60},
+            {"pipe", 60},
+            {"small-electric-pole", 50},
+            {"fast-inserter", 50},
+            {"soil-extractormk01", 16},
+            {"washer", 8},
+            {"automated-screener-mk01", 8},
+            {"offshore-pump", 4},
+            {"py-sinkhole", 1}
+        },
+        size = 44,
+        energy_usage = "10MW",
+        emissions_per_minute = 1.35,
+        unlocked_by = cflib.base_technology
+    }
 end
