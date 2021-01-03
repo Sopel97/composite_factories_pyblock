@@ -128,4 +128,36 @@ do
         emissions_per_minute = 1.35,
         unlocked_by = cflib.base_technology
     }
+
+    cflib.add_composite_factory{
+        name = "titanium-plate-0",
+        ingredients = {},
+        results = {
+            {"titanium-plate", 1}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 350},
+            {"underground-belt", 10},
+            {"splitter", 10},
+            {"pipe-to-ground", 80},
+            {"pipe", 70},
+            {"small-electric-pole", 60},
+            {"fast-inserter", 100},
+            {"soil-extractormk01", 20},
+            {"washer", 10},
+            {"classifier", 11},
+            {"automated-screener-mk01", 3},
+            {"offshore-pump", 10},
+            {"py-sinkhole", 1},
+            {"jaw-crusher", 2},
+            {"secondary-crusher-mk01", 1},
+            {"ball-mill-mk01", 1},
+            {"advanced-foundry-mk01", 1}
+        },
+        size = 60,
+        energy_usage = "14MW",
+        emissions_per_minute = 2.57,
+        unlocked_by = cflib.base_technology
+    }
 end
