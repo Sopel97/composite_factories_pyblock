@@ -741,17 +741,32 @@ do
         update_material_exchange_container_gui(gui, entity, player)
     end
 
-    script.on_nth_tick(10, function(event)
+    local on_researched_finished_while_open = {}
+    on_researched_finished_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
+        local gui = opened_gui.gui
+        local entity = opened_gui.entity
+        update_material_exchange_container_gui(gui, entity, player)
+    end
+
+    local function on_something_while_open(event, something)
         for _, player in pairs(game.players) do
             local player_index = player.index
 
             local opened_gui = multi_index_get(global, { "opened_guis", player_index })
             if opened_gui then
-                local func = on_every_10th_tick_while_open[opened_gui.gui.name]
+                local func = something[opened_gui.gui.name]
                 if func then
                     func(player, opened_gui)
                 end
             end
         end
+    end
+
+    script.on_nth_tick(10, function(event)
+        on_something_while_open(event, on_every_10th_tick_while_open)
+    end)
+
+    script.on_event(defines.events.on_research_finished, function(event)
+        on_something_while_open(event, on_research_finished)
     end)
 end
