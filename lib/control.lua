@@ -10,6 +10,7 @@ do
         on_researched_finished_while_open = {}
     }
 
+    -- TODO: utility lib?
     local function multi_index_set(table, indices, value)
         local t = table
         local num_indices = #indices
@@ -125,6 +126,7 @@ do
         return factories
     end
 
+    -- TODO: move all stuff like that to cflib.*?
     local function add_gui_event_handler(event_type, player, gui_element_name, func)
         local player_index = player.index
 
@@ -138,6 +140,7 @@ do
         return multi_index_get(cflib.event_handlers, {player_index, event_type, gui_element_name})
     end
 
+    -- TODO: separate file for every gui, interface through cflib.* and global.*?
     local function setup_material_exchange_container_gui(player)
         local gui_name = core.make_gui_element_name("material-exchange-container-gui")
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
@@ -414,6 +417,7 @@ do
         return true
     end
 
+    -- TODO: move to lib?
     local function craft_inside_inventory(player, inventory, recipe)
         for _, ingredient in pairs(recipe.ingredients) do
             inventory.remove({
@@ -525,6 +529,7 @@ do
         end
     end
 
+    -- TODO: move to lib?
     local function are_tables_equal(a, b)
         local count = 0
 
