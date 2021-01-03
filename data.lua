@@ -1,6 +1,7 @@
 do
     local cflib = require("lib/data")
 
+    --[[ Examples:
     local test_tech_name = cflib.add_technology{
         name = "test-tech",
         prerequisites = {cflib.base_technology},
@@ -74,6 +75,7 @@ do
         size = 12,
         unlocked_by = test_tech_name
     }
+    --]]
 
     -- End of placeholder stuff
     cflib.add_composite_factory{
