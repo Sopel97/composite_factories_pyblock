@@ -46,13 +46,20 @@ do
     local function is_initialized(player, name)
         local player_index = player.index
 
-        return multi_index_get(cflib.init_flags, {player_index, name})
+        local b = multi_index_get(cflib.init_flags, {player_index, name})
+        return b or false
     end
 
     local function set_initialized(player, name)
         local player_index = player.index
 
         multi_index_set(cflib.init_flags, {player_index, name}, true)
+    end
+
+    local function set_not_initialized(player, name)
+        local player_index = player.index
+
+        multi_index_set(cflib.init_flags, {player_index, name}, false)
     end
 
     local function is_recipe_researched(player, recipe_prototype)
@@ -677,11 +684,12 @@ do
     local function get_material_exchange_container_gui(player)
         local material_exchange_container_gui_name = core.make_gui_element_name("material-exchange-container-gui")
 
+        -- TODO: maybe stup guis for each player when they connect? would be easier to reset on config change.
         local gui = player.gui.relative[material_exchange_container_gui_name] or setup_material_exchange_container_gui(player)
 
-        if not is_initialized(player, "material-exchange-container-gui") then
+        if not is_initialized(player, "material-exchange-container-gui-events") then
             setup_material_exchange_container_gui_events(player)
-            set_initialized(player, "material-exchange-container-gui")
+            set_initialized(player, "material-exchange-container-gui-events")
         end
 
         return gui
@@ -691,12 +699,28 @@ do
         global.prototypes = get_composite_factories_prototypes()
     end
 
-    script.on_init(function()
+    local function reset_material_exchange_container_gui()
+        local material_exchange_container_gui_name = core.make_gui_element_name("material-exchange-container-gui")
+
+        player.gui.relative[material_exchange_container_gui_name] = nil
+        set_not_initialized(player, "material-exchange-container-gui-events")
+    end
+
+    local function reset_guis()
+        reset_material_exchange_container_gui()
+    end
+
+    local function reinitialize()
         setup_cache()
+        reset_guis()
+    end
+
+    script.on_init(function()
+        reinitialize()
     end)
 
     script.on_configuration_changed(function(event)
-        setup_cache()
+        reinitialize()
     end)
 
     script.on_event(defines.events.on_gui_click, function(event)
