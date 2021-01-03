@@ -160,4 +160,34 @@ do
         emissions_per_minute = 2.57,
         unlocked_by = cflib.base_technology
     }
+
+    cflib.add_composite_generator{
+        name = "electricity-1",
+        ingredients = {},
+        energy_production = "90MW",
+        buffer_capacity = "90MJ",
+        constituent_buildings = {
+            {"pipe-to-ground", 180},
+            {"pipe", 125},
+            {"steam-engine", 110},
+            {"small-electric-pole", 75},
+            {"oil-boiler-mk01", 55},
+            {"fast-inserter", 12},
+            {"transport-belt", 10},
+            {"distilator", 7},
+            {"py-sinkhole", 5},
+            {"offshore-pump", 5},
+            {"py-overflow-valve", 2},
+            {"py-gas-vent", 2},
+            {"soil-extractormk01", 2},
+            {"fluid-separator", 2},
+            {"electrolyzer-mk01", 1},
+            {"lor-mk01", 1},
+            {"washer", 1},
+            {"quenching-tower", 1},
+            {"advanced-foundry-mk01", 1}
+        },
+        size = 76,
+        unlocked_by = cflib.base_technology
+    }
 end
