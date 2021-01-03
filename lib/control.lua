@@ -473,20 +473,6 @@ do
         return true
     end
 
-    local function setup_material_exchange_container_gui_global_events()
-        cflib.on_every_10th_tick_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
-            local gui = opened_gui.gui
-            local entity = opened_gui.entity
-            update_material_exchange_container_gui(gui, entity, player)
-        end
-
-        cflib.on_researched_finished_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
-            local gui = opened_gui.gui
-            local entity = opened_gui.entity
-            update_material_exchange_container_gui(gui, entity, player)
-        end
-    end
-
     local function setup_material_exchange_container_gui_events(player)
         local gui_name = core.make_gui_element_name("material-exchange-container-gui")
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
@@ -681,6 +667,20 @@ do
         end
     end
 
+    local function setup_material_exchange_container_gui_global_events()
+        cflib.on_every_10th_tick_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
+            local gui = opened_gui.gui
+            local entity = opened_gui.entity
+            update_material_exchange_container_gui(gui, entity, player)
+        end
+
+        cflib.on_researched_finished_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
+            local gui = opened_gui.gui
+            local entity = opened_gui.entity
+            update_material_exchange_container_gui(gui, entity, player)
+        end
+    end
+
     local function get_material_exchange_container_gui(player)
         local material_exchange_container_gui_name = core.make_gui_element_name("material-exchange-container-gui")
 
@@ -702,8 +702,12 @@ do
     local function reset_material_exchange_container_gui()
         local material_exchange_container_gui_name = core.make_gui_element_name("material-exchange-container-gui")
 
-        player.gui.relative[material_exchange_container_gui_name] = nil
-        set_not_initialized(player, "material-exchange-container-gui-events")
+        for _, player in pairs(game.players) do
+            if player.gui.relative[material_exchange_container_gui_name] then
+                player.gui.relative[material_exchange_container_gui_name].destroy()
+            end
+            set_not_initialized(player, "material-exchange-container-gui-events")
+        end
     end
 
     local function reset_guis()
