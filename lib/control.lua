@@ -3,7 +3,11 @@ do
 
     local cflib = {
         init_flags = {},
-        event_handlers = {}
+        event_handlers = {},
+
+        -- TODO: try to unify these with event_handlers?
+        on_every_10th_tick_while_open = {},
+        on_researched_finished_while_open = {}
     }
 
     local function multi_index_set(table, indices, value)
@@ -458,6 +462,20 @@ do
         return true
     end
 
+    local function setup_material_exchange_container_gui_global_events()
+        cflib.on_every_10th_tick_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
+            local gui = opened_gui.gui
+            local entity = opened_gui.entity
+            update_material_exchange_container_gui(gui, entity, player)
+        end
+
+        cflib.on_researched_finished_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
+            local gui = opened_gui.gui
+            local entity = opened_gui.entity
+            update_material_exchange_container_gui(gui, entity, player)
+        end
+    end
+
     local function setup_material_exchange_container_gui_events(player)
         local gui_name = core.make_gui_element_name("material-exchange-container-gui")
         local main_pane_name = core.make_gui_element_name("material-exchange-container-gui-main-pane")
@@ -734,20 +752,6 @@ do
         end
     end)
 
-    local on_every_10th_tick_while_open = {}
-    on_every_10th_tick_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
-        local gui = opened_gui.gui
-        local entity = opened_gui.entity
-        update_material_exchange_container_gui(gui, entity, player)
-    end
-
-    local on_researched_finished_while_open = {}
-    on_researched_finished_while_open[core.make_gui_element_name("material-exchange-container-gui")] = function(player, opened_gui)
-        local gui = opened_gui.gui
-        local entity = opened_gui.entity
-        update_material_exchange_container_gui(gui, entity, player)
-    end
-
     local function on_something_while_open(event, something)
         for _, player in pairs(game.players) do
             local player_index = player.index
@@ -763,10 +767,12 @@ do
     end
 
     script.on_nth_tick(10, function(event)
-        on_something_while_open(event, on_every_10th_tick_while_open)
+        on_something_while_open(event, cflib.on_every_10th_tick_while_open)
     end)
 
     script.on_event(defines.events.on_research_finished, function(event)
-        on_something_while_open(event, on_research_finished)
+        on_something_while_open(event, cflib.on_research_finished)
     end)
+
+    setup_material_exchange_container_gui_global_events()
 end
