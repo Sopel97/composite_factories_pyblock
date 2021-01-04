@@ -224,7 +224,7 @@ do
 
     local circuit_2_tech =  cflib.add_technology{
         name = "circuit-2-technology",
-        prerequisites = {"basic-electronics"},
+        prerequisites = {"basic-electronics", cflib.base_technology},
         num_units = 500,
         unit_ingredients = {
             {"automation-science-pack", 1},
