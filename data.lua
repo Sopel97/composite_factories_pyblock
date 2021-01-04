@@ -1,6 +1,4 @@
 do
-    local cflib = require("lib/data")
-
     --[[ Examples:
     local test_tech_name = cflib.add_technology{
         name = "test-tech",
