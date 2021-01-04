@@ -188,4 +188,37 @@ do
         size = 38,
         unlocked_by = cflib.base_technology
     }
+
+    cflib.add_composite_generator{
+        name = "electricity-1-b",
+        ingredients = {},
+        energy_production = "90MW",
+        buffer_capacity = "90MJ",
+        constituent_buildings = {
+            {"pipe-to-ground", 250},
+            {"pipe", 250},
+            {"transport-belt", 120},
+            {"small-electric-pole", 75},
+            {"fast-inserter", 30},
+            {"plankton-farm", 10},
+            {"power-house", 10},
+            {"long-handed-inserter", 10},
+            {"gasturbinemk01", 8},
+            {"gasifier", 7},
+            {"soil-extractormk01", 6},
+            {"offshore-pump", 6},
+            {"electrolyzer-mk01", 5},
+            {"washer", 3},
+            {"vacuum-pump-mk01", 2},
+            {"storage-tank", 2},
+            {"compost-plant-mk01", 1},
+            {"py-underflow-valve", 1},
+            {"py-overflow-valve", 1},
+            {"py-sinkhole", 1},
+            {"py-gas-vent", 1},
+            {"distilator", 1}
+        },
+        size = 30,
+        unlocked_by = cflib.base_technology
+    }
 end
