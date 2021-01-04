@@ -77,7 +77,7 @@ do
 
     -- End of placeholder stuff
     cflib.add_composite_factory{
-        name = "tar-0",
+        name = "tar-0-a",
         ingredients = {},
         results = {
             {type = "fluid", name = "tar", amount = 250}
@@ -102,7 +102,7 @@ do
     }
 
     cflib.add_composite_factory{
-        name = "quartz-0",
+        name = "quartz-0-a",
         ingredients = {},
         results = {
             {"ore-quartz", 3}
@@ -128,7 +128,7 @@ do
     }
 
     cflib.add_composite_factory{
-        name = "titanium-plate-0",
+        name = "titanium-plate-0-a",
         ingredients = {},
         results = {
             {"titanium-plate", 1}
@@ -160,7 +160,7 @@ do
     }
 
     cflib.add_composite_generator{
-        name = "electricity-1",
+        name = "electricity-1-a",
         ingredients = {},
         energy_production = "90MW",
         buffer_capacity = "90MJ",
