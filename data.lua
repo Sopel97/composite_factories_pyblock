@@ -121,7 +121,7 @@ do
             {"offshore-pump", 4},
             {"py-sinkhole", 1}
         },
-        size = 44,
+        size = 22,
         energy_usage = "10MW",
         emissions_per_minute = 1.35,
         unlocked_by = cflib.base_technology
@@ -153,7 +153,7 @@ do
             {"ball-mill-mk01", 1},
             {"advanced-foundry-mk01", 1}
         },
-        size = 60,
+        size = 30,
         energy_usage = "14MW",
         emissions_per_minute = 2.57,
         unlocked_by = cflib.base_technology
@@ -185,7 +185,7 @@ do
             {"quenching-tower", 1},
             {"advanced-foundry-mk01", 1}
         },
-        size = 76,
+        size = 38,
         unlocked_by = cflib.base_technology
     }
 end
