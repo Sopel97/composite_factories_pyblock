@@ -8,7 +8,8 @@
 	"homepage": "",
 	"description": "Add buildings that replace large structures for making basic stuff",
 	"dependencies": [
-    	"base >= 1.0.0",
-    	"composite_factories_base >= 1.0.0"
+		"base >= 1.0.0",
+		"composite_factories_base >= 1.0.0",
+		"PyBlock >= 0.2.0"
 	]
 }
