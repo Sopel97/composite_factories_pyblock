@@ -1,6 +1,11 @@
 do
     local circuit_2_tech = cflib.make_technology_name("circuit-2-technology")
 
+    local item_subgroup = cflib.add_item_subgroup{
+        name = "generator-2",
+        order = "c-2"
+    }
+
     cflib.add_composite_generator{
         name = "electricity-2-a",
         energy_production = "380MW",
@@ -31,6 +36,7 @@ do
             {"distilator-mk02", 1}
         },
         size = 50,
-        unlocked_by = circuit_2_tech
+        unlocked_by = circuit_2_tech,
+        subgroup = item_subgroup
     }
 end

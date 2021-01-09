@@ -1,4 +1,9 @@
 do
+    local item_subgroup = cflib.add_item_subgroup{
+        name = "factory-0",
+        order = "b-0"
+    }
+
     cflib.add_composite_factory{
         name = "tar-0-a",
         ingredients = {},
@@ -21,7 +26,8 @@ do
         size = 36,
         energy_usage = "10MW",
         emissions_per_minute = 1.68,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_factory{
@@ -47,7 +53,8 @@ do
         size = 32,
         energy_usage = "10MW",
         emissions_per_minute = 1.35,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_factory{
@@ -79,7 +86,8 @@ do
         size = 42,
         energy_usage = "14MW",
         emissions_per_minute = 2.57,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_factory{
@@ -106,7 +114,8 @@ do
         size = 16,
         energy_usage = "4MW",
         emissions_per_minute = 38.18,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_factory{
@@ -138,7 +147,8 @@ do
         size = 24,
         energy_usage = "3MW",
         emissions_per_minute = -165.81,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_factory{
@@ -170,7 +180,8 @@ do
         size = 36,
         energy_usage = "12MW",
         emissions_per_minute = 1.56,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_factory{
@@ -197,7 +208,8 @@ do
         size = 30,
         energy_usage = "8MW",
         emissions_per_minute = 0.26,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_factory{
@@ -224,7 +236,8 @@ do
         size = 30,
         energy_usage = "8MW",
         emissions_per_minute = 0.26,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_factory{
@@ -255,7 +268,8 @@ do
         size = 40,
         energy_usage = "6MW",
         emissions_per_minute = -600,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_factory{
@@ -286,7 +300,8 @@ do
         size = 23,
         energy_usage = "2MW",
         emissions_per_minute = -180,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_factory{
@@ -317,6 +332,7 @@ do
         size = 40,
         energy_usage = "4MW",
         emissions_per_minute = -630,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 end

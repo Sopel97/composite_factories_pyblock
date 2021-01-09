@@ -1,4 +1,9 @@
 do
+    local item_subgroup = cflib.add_item_subgroup{
+        name = "generator-1",
+        order = "c-1"
+    }
+
     cflib.add_composite_generator{
         name = "electricity-1-a",
         energy_production = "90MW",
@@ -25,7 +30,8 @@ do
             {"advanced-foundry-mk01", 1}
         },
         size = 54,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 
     cflib.add_composite_generator{
@@ -57,6 +63,7 @@ do
             {"distilator", 1}
         },
         size = 42,
-        unlocked_by = cflib.base_technology
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
     }
 end
