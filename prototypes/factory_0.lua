@@ -131,7 +131,6 @@ do
             {"botanical-nursery", 2},
             {"compost-plant-mk01", 1},
             {"assembling-machine-1", 1},
-            {"offshore-pump", 1},
             {"storage-tank", 1},
             {"wpu", 1},
             {"py-overflow-valve", 1}
