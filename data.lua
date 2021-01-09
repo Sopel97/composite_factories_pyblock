@@ -363,4 +363,35 @@ do
         emissions_per_minute = -600,
         unlocked_by = cflib.base_technology
     }
+
+    cflib.add_composite_factory{
+        name = "biomass-0-a",
+        ingredients = {},
+        results = {
+            {"biomass", 9}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 80},
+            {"tree-mk01", 50},
+            {"moss", 30},
+            {"pipe-to-ground", 30},
+            {"pipe", 30},
+            {"small-electric-pole", 25},
+            {"fast-inserter", 20},
+            {"underground-belt", 4},
+            {"wpu", 1},
+            {"fwf-mk01", 2},
+            {"moss-farm-mk01", 2},
+            {"botanical-nursery", 2},
+            {"hpf", 2},
+            {"compost-plant-mk01", 1},
+            {"assembling-machine-1", 1},
+            {"offshore-pump", 1}
+        },
+        size = 23,
+        energy_usage = "2MW",
+        emissions_per_minute = -180,
+        unlocked_by = cflib.base_technology
+    }
 end
