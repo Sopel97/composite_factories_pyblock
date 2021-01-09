@@ -332,4 +332,35 @@ do
         emissions_per_minute = 0.26,
         unlocked_by = cflib.base_technology
     }
+
+    cflib.add_composite_factory{
+        name = "wood-0-a",
+        ingredients = {},
+        results = {
+            {"wood", 5}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 350},
+            {"tree-mk01", 175},
+            {"moss", 90},
+            {"pipe-to-ground", 75},
+            {"pipe", 50},
+            {"small-electric-pole", 70},
+            {"fast-inserter", 50},
+            {"underground-belt", 10},
+            {"wpu", 10},
+            {"fwf-mk01", 7},
+            {"moss-farm-mk01", 6},
+            {"botanical-nursery", 5},
+            {"hpf", 2},
+            {"compost-plant-mk01", 1},
+            {"assembling-machine-1", 1},
+            {"offshore-pump", 1}
+        },
+        size = 40,
+        energy_usage = "6MW",
+        emissions_per_minute = -600,
+        unlocked_by = cflib.base_technology
+    }
 end
