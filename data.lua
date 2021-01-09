@@ -213,4 +213,37 @@ do
         emissions_per_minute = 38.18,
         unlocked_by = cflib.base_technology
     }
+
+    cflib.add_composite_factory{
+        name = "carbon-dioxide-0-a",
+        ingredients = {},
+        results = {
+            {type = "fluid", name = "carbon-dioxide", amount = 250}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 60},
+            {"tree-mk01", 50},
+            {"moss", 30},
+            {"pipe-to-ground", 30},
+            {"pipe", 30},
+            {"small-electric-pole", 15},
+            {"fast-inserter", 20},
+            {"hpf", 4},
+            {"moss-farm-mk01", 2},
+            {"offshore-pump", 1},
+            {"fwf-mk01", 2},
+            {"botanical-nursery", 2},
+            {"compost-plant-mk01", 1},
+            {"assembling-machine-1", 1},
+            {"offshore-pump", 1},
+            {"storage-tank", 1},
+            {"wpu", 1},
+            {"py-overflow-valve", 1}
+        },
+        size = 24,
+        energy_usage = "3MW",
+        emissions_per_minute = -165.81,
+        unlocked_by = cflib.base_technology
+    }
 end
