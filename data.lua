@@ -246,4 +246,36 @@ do
         emissions_per_minute = -165.81,
         unlocked_by = cflib.base_technology
     }
+
+    cflib.add_composite_factory{
+        name = "syngas-0-a",
+        ingredients = {},
+        results = {
+            {type = "fluid", name = "syngas", amount = 250}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 120},
+            {"pipe-to-ground", 150},
+            {"pipe", 150},
+            {"small-electric-pole", 40},
+            {"fast-inserter", 25},
+            {"underground-belt", 16},
+            {"soil-extractormk01", 8},
+            {"long-handed-inserter", 8},
+            {"electrolyzer-mk01", 6},
+            {"washer", 4},
+            {"offshore-pump", 3},
+            {"vacuum-pump-mk01", 2},
+            {"py-gas-vent", 2},
+            {"py-sinkhole", 1},
+            {"py-underflow-valve", 1},
+            {"distilator", 1},
+            {"storage-tank", 1}
+        },
+        size = 36,
+        energy_usage = "12MW",
+        emissions_per_minute = 1.56,
+        unlocked_by = cflib.base_technology
+    }
 end
