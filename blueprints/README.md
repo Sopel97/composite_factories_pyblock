@@ -12,7 +12,7 @@ Voiding items is more complicated as it requires fuel. Ideally we don't want to 
 
 # Size
 
-The factories are generally huge and not square. Keeping the size the same after consolidation is not required and could be harmful to gameplay. For example making tar in quantities of 250/s requires a building of size roughly 50^2; but we make it smaller. Generally I think a good guideline is to use `sqrt(width*height)/2` per side, resulting in 1/4th of area.
+The factories are generally huge and not square. Keeping the size the same after consolidation is not required and could be harmful to gameplay. For example making tar in quantities of 250/s requires a building of size roughly 50^2; but we make it smaller. Generally I think a good guideline is to use the sizes such that the total area is half of the real thing, so approximately `sqrt(width*height)/sqrt(2)` per side.
 
 # Ingredients
 

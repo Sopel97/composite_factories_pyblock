@@ -18,7 +18,7 @@ do
             {"py-sinkhole", 1},
             {"distilator", 1}
         },
-        size = 25,
+        size = 36,
         energy_usage = "10MW",
         emissions_per_minute = 1.68,
         unlocked_by = cflib.base_technology
@@ -44,7 +44,7 @@ do
             {"offshore-pump", 4},
             {"py-sinkhole", 1}
         },
-        size = 22,
+        size = 32,
         energy_usage = "10MW",
         emissions_per_minute = 1.35,
         unlocked_by = cflib.base_technology
@@ -76,7 +76,7 @@ do
             {"ball-mill-mk01", 1},
             {"advanced-foundry-mk01", 1}
         },
-        size = 30,
+        size = 42,
         energy_usage = "14MW",
         emissions_per_minute = 2.57,
         unlocked_by = cflib.base_technology
@@ -108,7 +108,7 @@ do
             {"quenching-tower", 1},
             {"advanced-foundry-mk01", 1}
         },
-        size = 38,
+        size = 54,
         unlocked_by = cflib.base_technology
     }
 
@@ -141,7 +141,7 @@ do
             {"py-gas-vent", 1},
             {"distilator", 1}
         },
-        size = 30,
+        size = 42,
         unlocked_by = cflib.base_technology
     }
 
@@ -186,7 +186,7 @@ do
             {"py-gas-vent", 1},
             {"distilator-mk02", 1}
         },
-        size = 36,
+        size = 50,
         unlocked_by = circuit_2_tech
     }
 end
