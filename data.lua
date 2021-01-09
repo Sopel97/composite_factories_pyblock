@@ -186,4 +186,31 @@ do
         size = 50,
         unlocked_by = circuit_2_tech
     }
+
+    cflib.add_composite_factory{
+        name = "hot-air-0-a",
+        ingredients = {},
+        results = {
+            {type = "fluid", name = "hot-air", amount = 25}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 20},
+            {"pipe-to-ground", 10},
+            {"pipe", 15},
+            {"small-electric-pole", 15},
+            {"fast-inserter", 15},
+            {"soil-extractormk01", 4},
+            {"washer", 2},
+            {"offshore-pump", 1},
+            {"py-sinkhole", 1},
+            {"advanced-foundry-mk01", 4},
+            {"vacuum-pump-mk01", 2},
+            {"rhe", 1}
+        },
+        size = 16,
+        energy_usage = "4MW",
+        emissions_per_minute = 38.18,
+        unlocked_by = cflib.base_technology
+    }
 end
