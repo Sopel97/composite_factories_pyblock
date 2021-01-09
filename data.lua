@@ -394,4 +394,35 @@ do
         emissions_per_minute = -180,
         unlocked_by = cflib.base_technology
     }
+
+    cflib.add_composite_factory{
+        name = "methane-0-a",
+        ingredients = {},
+        results = {
+            {type = "fluid", name = "methane", amount = 20}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 400},
+            {"pipe-to-ground", 100},
+            {"pipe", 70},
+            {"small-electric-pole", 50},
+            {"fast-inserter", 25},
+            {"long-handed-inserter", 10},
+            {"filter-inserter", 2},
+            {"moondrop", 360},
+            {"moondrop-greenhouse-mk01", 18},
+            {"electrolyzer-mk01", 1},
+            {"compost-plant-mk01", 1},
+            {"py-gas-vent", 1},
+            {"soil-extractormk01", 1},
+            {"botanical-nursery", 1},
+            {"hpf", 1},
+            {"offshore-pump", 1}
+        },
+        size = 40,
+        energy_usage = "4MW",
+        emissions_per_minute = -630,
+        unlocked_by = cflib.base_technology
+    }
 end
