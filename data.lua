@@ -84,7 +84,6 @@ do
 
     cflib.add_composite_generator{
         name = "electricity-1-a",
-        ingredients = {},
         energy_production = "90MW",
         buffer_capacity = "90MJ",
         constituent_buildings = {
@@ -114,7 +113,6 @@ do
 
     cflib.add_composite_generator{
         name = "electricity-1-b",
-        ingredients = {},
         energy_production = "90MW",
         buffer_capacity = "90MJ",
         constituent_buildings = {
@@ -158,7 +156,6 @@ do
 
     cflib.add_composite_generator{
         name = "electricity-2-a",
-        ingredients = {},
         energy_production = "380MW",
         buffer_capacity = "380MJ",
         constituent_buildings = {
