@@ -335,4 +335,34 @@ do
         unlocked_by = cflib.base_technology,
         subgroup = item_subgroup
     }
+
+    cflib.add_composite_factory{
+        name = "fish-0-a",
+        ingredients = {},
+        results = {
+            {"fish", 1},
+            {type = "fluid", name = "waste-water", amount = 10}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 230},
+            {"fish", 112},
+            {"pipe-to-ground", 110},
+            {"seaweed", 60},
+            {"pipe", 40},
+            {"small-electric-pole", 60},
+            {"inserter", 50},
+            {"fish-farm-mk01", 16},
+            {"seaweed-crop-mk01", 6},
+            {"soil-extractormk01", 2},
+            {"washer", 2},
+            {"py-sinkhole", 1},
+            {"offshore-pump", 1}
+        },
+        size = 46,
+        energy_usage = "18MW",
+        emissions_per_minute = -190,
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
+    }
 end
