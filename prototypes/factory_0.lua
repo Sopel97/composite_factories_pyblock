@@ -338,4 +338,34 @@ do
         unlocked_by = cflib.base_technology,
         subgroup = item_subgroup
     }
+
+    cflib.add_composite_factory{
+        name = "aromatics-0-a",
+        ingredients = {},
+        results = {
+            {type = "fluid", name = "aromatics", amount = 150}
+            {type = "fluid", name = "benzene", amount = 150}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 30},
+            {"pipe-to-ground", 150},
+            {"pipe", 120},
+            {"small-electric-pole", 30},
+            {"fast-inserter", 15},
+            {"distilator", 17},
+            {"py-sinkhole", 4},
+            {"soil-extractormk01", 4},
+            {"washer", 2},
+            {"fluid-separator", 4},
+            {"quenching-tower", 2},
+            {"py-gas-vent", 1},
+            {"offshore-pump", 1}
+        },
+        size = 36,
+        energy_usage = "8MW",
+        emissions_per_minute = 1.6,
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
+    }
 end
