@@ -188,34 +188,7 @@ do
         name = "dirty-water-0-a",
         ingredients = {},
         results = {
-            {type = "fluid", name = "dirty-water", amount = 1000}
-        },
-        energy_required = 1.0,
-        constituent_buildings = {
-            {"transport-belt", 100},
-            {"pipe-to-ground", 100},
-            {"pipe", 70},
-            {"small-electric-pole", 25},
-            {"fast-inserter", 25},
-            {"soil-extractormk01", 8},
-            {"washer", 4},
-            {"quenching-tower", 4},
-            {"offshore-pump", 3},
-            {"py-gas-vent", 1},
-            {"py-sinkhole", 2},
-            {"distilator", 1}
-        },
-        size = 30,
-        energy_usage = "8MW",
-        emissions_per_minute = 0.26,
-        unlocked_by = cflib.base_technology,
-        subgroup = item_subgroup
-    }
-
-    cflib.add_composite_factory{
-        name = "water-saline-0-a",
-        ingredients = {},
-        results = {
+            {type = "fluid", name = "dirty-water", amount = 1000},
             {type = "fluid", name = "water-saline", amount = 500}
         },
         energy_required = 1.0,
