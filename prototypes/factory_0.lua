@@ -343,7 +343,7 @@ do
         name = "aromatics-0-a",
         ingredients = {},
         results = {
-            {type = "fluid", name = "aromatics", amount = 150}
+            {type = "fluid", name = "aromatics", amount = 150},
             {type = "fluid", name = "benzene", amount = 150}
         },
         energy_required = 1.0,
@@ -365,6 +365,35 @@ do
         size = 36,
         energy_usage = "8MW",
         emissions_per_minute = 1.6,
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
+    }
+
+    cflib.add_composite_factory{
+        name = "salt-0-a",
+        ingredients = {},
+        results = {
+            {"salt", 10}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 10},
+            {"pipe-to-ground", 20},
+            {"pipe", 25},
+            {"small-electric-pole", 10},
+            {"fast-inserter", 10},
+            {"soil-extractormk01", 2},
+            {"washer", 1},
+            {"py-sinkhole", 1},
+            {"py-gas-vent", 1},
+            {"quenching-tower", 1},
+            {"evaporator", 1},
+            {"distilator", 1},
+            {"offshore-pump", 1}
+        },
+        size = 15,
+        energy_usage = "3MW",
+        emissions_per_minute = 0.24,
         unlocked_by = cflib.base_technology,
         subgroup = item_subgroup
     }
