@@ -397,4 +397,33 @@ do
         unlocked_by = cflib.base_technology,
         subgroup = item_subgroup
     }
+
+    cflib.add_composite_factory{
+        name = "steam-165deg-0-a",
+        ingredients = {},
+        results = {
+            {type = "fluid", name = "steam", amount = 250, temperature = 165}
+        },
+        energy_required = 1.0,
+        constituent_buildings = {
+            {"transport-belt", 10},
+            {"pipe-to-ground", 30},
+            {"pipe", 40},
+            {"small-electric-pole", 10},
+            {"fast-inserter", 10},
+            {"soil-extractormk01", 2},
+            {"washer", 1},
+            {"py-sinkhole", 2},
+            {"boiler", 5},
+            {"heavy-oil-refinery-mk01", 1},
+            {"vacuum-pump-mk01", 1},
+            {"distilator", 1},
+            {"offshore-pump", 1}
+        },
+        size = 18,
+        energy_usage = "2MW",
+        emissions_per_minute = 160,
+        unlocked_by = cflib.base_technology,
+        subgroup = item_subgroup
+    }
 end
