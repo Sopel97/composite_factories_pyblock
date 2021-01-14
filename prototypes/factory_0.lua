@@ -189,7 +189,8 @@ do
         ingredients = {},
         results = {
             {type = "fluid", name = "dirty-water", amount = 1000},
-            {type = "fluid", name = "water-saline", amount = 500}
+            {type = "fluid", name = "water-saline", amount = 500},
+            {type = "fluid", name = "flue-gas", amount = 300}
         },
         energy_required = 1.0,
         constituent_buildings = {
