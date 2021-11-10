@@ -311,7 +311,7 @@ do
     }
 
     cflib.add_composite_factory{
-        name = "fish-0-a",
+        name = "hsif-0-a", -- "fish" triggers some py stuff that we don't want...
         ingredients = {},
         results = {
             {"fish", 1},
